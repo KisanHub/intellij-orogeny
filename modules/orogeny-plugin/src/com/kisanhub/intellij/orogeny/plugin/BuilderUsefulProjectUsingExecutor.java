@@ -7,47 +7,38 @@ package com.kisanhub.intellij.orogeny.plugin;
 
 import com.kisanhub.intellij.orogeny.plugin.rebuilding.ProjectOfflineRebuilder;
 import com.kisanhub.intellij.orogeny.plugin.validation.ProjectValidator;
+import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.CategorisedProjectValidationMessagesRecorder;
+import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.ExitingProjectValidationMessagesRecorder;
 import com.kisanhub.intellij.useful.UsefulProject;
 import com.kisanhub.intellij.useful.commandLine.usingExecutors.UsingExecutor;
-import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.ErrorTrackingProjectValidationMessagesRecords;
 import org.jetbrains.annotations.NotNull;
 
-import static com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.PrintStreamProjectValidationMessagesRecorder.StandardErrorPrintStreamProjectValidationMessagesRecorder;
-import static java.lang.System.exit;
+import static java.lang.System.err;
 
 public final class BuilderUsefulProjectUsingExecutor implements UsingExecutor<UsefulProject>
 {
+	@SuppressWarnings("UseOfSystemOutOrSystemErr")
 	@Override
 	public void use(@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter") @NotNull final UsefulProject usefulProject)
 	{
-		final ErrorTrackingProjectValidationMessagesRecords projectValidationMessagesRecorder = new ErrorTrackingProjectValidationMessagesRecords(StandardErrorPrintStreamProjectValidationMessagesRecorder);
+		assert err != null;
+		final ExitingProjectValidationMessagesRecorder projectValidationMessagesRecorder = new ExitingProjectValidationMessagesRecorder(new CategorisedProjectValidationMessagesRecorder(), err);
 
 		final ProjectValidator projectValidator = new ProjectValidator(usefulProject);
 		projectValidator.validateArtifacts(projectValidationMessagesRecorder);
 		projectValidator.validateModuleOrderEntriesInModuleDependencyOrder(projectValidationMessagesRecorder);
 		projectValidator.validateCanRunInspections(projectValidationMessagesRecorder);
-
-		if (projectValidationMessagesRecorder.hasErrors())
-		{
-			exit(3);
-			return;
-		}
+		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
 
 		projectValidator.validateInspections(projectValidationMessagesRecorder);
-		if (projectValidationMessagesRecorder.hasErrors())
-		{
-			exit(3);
-			return;
-		}
+		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
 
 		new ProjectOfflineRebuilder(usefulProject).offlineRebuild(projectValidationMessagesRecorder);
-		if (projectValidationMessagesRecorder.hasErrors())
-		{
-			exit(3);
-			return;
-		}
+		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
 
-		throw new IllegalStateException("Finish me");
+		projectValidationMessagesRecorder.writeToPrintStream();
+
+		throw new IllegalStateException("TODO: rebuild artifacts");
 	}
 
 }
