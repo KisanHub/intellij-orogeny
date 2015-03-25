@@ -4,46 +4,24 @@
   -->
 
 <idea-plugin version="2">
-  <id>com.kisanhub.intellij.orogeny.plugin</id>
-  <name>Orogeny</name>
-  <version>0.0</version>
-  <vendor email="raphael.cohn@stormmq.com" url="http://kisanhub.com">KisanHub</vendor>
+	<id>com.kisanhub.intellij.orogeny.plugin</id>
+	<name>Orogeny</name>
+	<version>0.0</version>
+	<vendor email="raphael.cohn@stormmq.com" url="http://kisanhub.com">KisanHub</vendor>
 
-  <description><![CDATA[
-      Orogeny installs a command line application extension that lets IntelliJ be used as a build tool.<br>
-      To use it after installing, invoke IntelliJ with  <code>./idea.sh com.kisanhub.intellij.orogeny.plugin.BuilderCommandLineApplicationStarterEx pathToProjectFile</code><br>
-      This will validate your project, run all inspections (and fail the build if any are defined as errors) and then make all artifacts.<br>
-      Output goes wherever your project settings put it.
-    ]]></description>
+	<description>
+		<![CDATA[Orogeny installs a command line application extension that lets IntelliJ be used as a build tool.<br>To use it after installing, invoke IntelliJ with <code>./idea.sh com.kisanhub.intellij.orogeny.plugin.BuilderCommandLineApplicationStarterEx pathToProjectFile</code><br>
+      This will validate your project, run all inspections (and fail the build if any are defined as errors) and then make all artifacts.<br>Output goes wherever your project settings put it.]]>
+	</description>
 
-  <change-notes><![CDATA[
-      First Release
-    ]]>
-  </change-notes>
+	<change-notes>
+		<![CDATA[First Release]]>
+	</change-notes>
 
-  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="131"/>
+	<idea-version since-build="131"/>
 
-  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
-
-  <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
-  </extensions>
-
-  <application-components>
-    <!-- Add your application components here -->
-  </application-components>
-
-  <project-components>
-    <!-- Add your project components here -->
-  </project-components>
-
-  <actions>
-    <!-- Add your actions here -->
-  </actions>
+	<extensions defaultExtensionNs="com.intellij">
+		<appStarter implementation="com.kisanhub.intellij.orogeny.plugin.BuilderCommandLineApplicationStarterEx"/>
+	</extensions>
 
 </idea-plugin>
