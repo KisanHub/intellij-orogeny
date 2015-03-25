@@ -4,19 +4,20 @@
   -->
 
 <idea-plugin version="2">
-  <id>com.yourcompany.unique.plugin.id</id>
-  <name>Plugin display name here</name>
-  <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <id>com.kisanhub.intellij.orogeny.plugin</id>
+  <name>Orogeny</name>
+  <version>0.0</version>
+  <vendor email="raphael.cohn@stormmq.com" url="http://kisanhub.com">KisanHub</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+      Orogeny installs a command line application extension that lets IntelliJ be used as a build tool.<br>
+      To use it after installing, invoke IntelliJ with  <code>./idea.sh com.kisanhub.intellij.orogeny.plugin.BuilderCommandLineApplicationStarterEx pathToProjectFile</code><br>
+      This will validate your project, run all inspections (and fail the build if any are defined as errors) and then make all artifacts.<br>
+      Output goes wherever your project settings put it.
     ]]></description>
 
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
+      First Release
     ]]>
   </change-notes>
 
