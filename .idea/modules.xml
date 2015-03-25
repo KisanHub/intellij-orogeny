@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/modules/orogeny-external/orogeny-external.iml" filepath="$PROJECT_DIR$/modules/orogeny-external/orogeny-external.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/orogeny-plugin/orogeny-plugin.iml" filepath="$PROJECT_DIR$/modules/orogeny-plugin/orogeny-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/useful/useful.iml" filepath="$PROJECT_DIR$/modules/useful/useful.iml" />
+    </modules>
+  </component>
+</project>

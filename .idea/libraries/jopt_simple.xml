@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="jopt-simple">
+    <ANNOTATIONS>
+      <root url="file://$PROJECT_DIR$/library/jopt-simple/annotations" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/library/jopt-simple/current" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/library/jopt-simple/current" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/library/jopt-simple/current" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/library/jopt-simple/current" recursive="false" type="SOURCES" />
+  </library>
+</component>

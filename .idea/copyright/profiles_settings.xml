@@ -1,0 +1,7 @@
+<component name="CopyrightManager">
+  <settings default="intellij-orogeny">
+    <module2copyright>
+      <element module="All" copyright="intellij-orogeny" />
+    </module2copyright>
+  </settings>
+</component>
