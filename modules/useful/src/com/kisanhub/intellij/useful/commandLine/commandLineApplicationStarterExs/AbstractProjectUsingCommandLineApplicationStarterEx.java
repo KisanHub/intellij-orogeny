@@ -19,6 +19,7 @@ import static java.lang.String.format;
 import static java.lang.System.err;
 import static java.util.Locale.ENGLISH;
 
+@SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
 public abstract class AbstractProjectUsingCommandLineApplicationStarterEx extends AbstractCommandLineApplicationStarterEx
 {
 	@NotNull
@@ -30,9 +31,9 @@ public abstract class AbstractProjectUsingCommandLineApplicationStarterEx extend
 	}
 
 	@Override
-	protected final int execute(@NotNull final List<String> commandLineArgumentsExcludingCommandName)
+	protected final int execute(@NotNull final String... commandLineArgumentsExcludingCommandName)
 	{
-		final String projectFilePathString = commandLineArgumentsExcludingCommandName.get(0);
+		final String projectFilePathString = commandLineArgumentsExcludingCommandName[0];
 		assert projectFilePathString != null;
 		return useProject(projectFilePathString, projectUsingExecutor);
 	}

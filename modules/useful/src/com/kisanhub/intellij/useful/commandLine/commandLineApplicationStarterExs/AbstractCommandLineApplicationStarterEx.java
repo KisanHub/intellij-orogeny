@@ -10,16 +10,16 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.intellij.idea.IdeaApplication.IDEA_IS_UNIT_TEST;
 import static com.intellij.openapi.application.ex.ApplicationManagerEx.getApplicationEx;
 import static java.lang.Boolean.TRUE;
-import static java.lang.System.err;
-import static java.lang.System.exit;
-import static java.lang.System.setProperty;
+import static java.lang.System.*;
 import static java.util.Arrays.asList;
 
+@SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
 public abstract class AbstractCommandLineApplicationStarterEx extends ApplicationStarterEx
 {
 	public static final int SuccessExitCode = 0;
@@ -97,7 +97,11 @@ public abstract class AbstractCommandLineApplicationStarterEx extends Applicatio
 		//noinspection CallToSimpleGetterFromWithinClass
 		assert getCommandName().equals(ourCommandName);
 
-		final List<String> commandLineArgumentsExcludingCommandName = asList(args).subList(1, args.length - 1);
+		final int reducedBy = 1;
+		final int reducedLength = args.length - reducedBy;
+		final String[] commandLineArgumentsExcludingCommandName = new String[reducedLength];
+		arraycopy(args, reducedBy, commandLineArgumentsExcludingCommandName, 0, reducedLength);
+
 		final int exitCode;
 		try
 		{
@@ -126,7 +130,7 @@ public abstract class AbstractCommandLineApplicationStarterEx extends Applicatio
 		exit(exitCode);
 	}
 
-	protected abstract int execute(@NotNull final List<String> commandLineArgumentsExcludingCommandName);
+	protected abstract int execute(@NotNull final String... commandLineArgumentsExcludingCommandName);
 
 	@NotNull
 	private static ApplicationEx application()
