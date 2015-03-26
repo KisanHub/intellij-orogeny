@@ -5,18 +5,21 @@
 
 package com.kisanhub.intellij.useful.commandLine;
 
-import com.intellij.ide.Bootstrap;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+
+import static com.intellij.ide.Bootstrap.main;
 import static com.intellij.idea.Main.setFlags;
 import static com.intellij.openapi.application.PathManager.PROPERTY_HOME_PATH;
-import static com.kisanhub.intellij.useful.commandLine.commandLineApplicationStarterExs.AbstractCommandLineApplicationStarterEx.UnexpectedErrorExitCode;
 import static java.lang.Boolean.TRUE;
 import static java.lang.System.*;
+import static java.lang.Thread.currentThread;
 
 public final class ExternalDriver
 {
+	@SuppressWarnings("HardcodedFileSeparator")
 	@NonNls
 	@NotNull
 	public static final String MacOsXHomePath = "/Applications/IntelliJ IDEA 14 CE.app/Contents";
@@ -39,24 +42,34 @@ public final class ExternalDriver
 
 	@NotNull
 	@NonNls
-	private final String homePath;
+	private final File homePath;
 
-	public ExternalDriver(@NotNull final String homePath)
+	public ExternalDriver(@NotNull final File homePath)
 	{
 		this.homePath = homePath;
 	}
 
 	public void invoke(@NotNull final String abstractCommandLineApplicationStarterExClassName, @NotNull final String... commandLineArguments)
 	{
+		forceIntelliJJarsOntoClassPath();
 		forceIntelliJHome();
 		forceIntelliJCommunityEditionToBeHeadlessAndInCommandLineMode();
 		invokeIntelliJWithOurApplication(abstractCommandLineApplicationStarterExClassName, commandLineArguments);
 	}
 
+	private void forceIntelliJJarsOntoClassPath()
+	{
+		final File intelliJJarPath = new File(homePath, "lib");
+		final Class<? extends ExternalDriver> aClass = getClass();
+		assert aClass != null;
+		@SuppressWarnings("ClassLoaderInstantiation") final JarFileClassLoader jarFileClassLoader = new JarFileClassLoader(aClass.getClassLoader(), intelliJJarPath);
+		currentThread().setContextClassLoader(jarFileClassLoader);
+	}
+
 	@SuppressWarnings("AccessOfSystemProperties")
 	private void forceIntelliJHome()
 	{
-		setProperty(PROPERTY_HOME_PATH, homePath);
+		setProperty(PROPERTY_HOME_PATH, homePath.getPath());
 	}
 
 	@SuppressWarnings("AccessOfSystemProperties")
@@ -76,12 +89,11 @@ public final class ExternalDriver
 
 		try
 		{
-			Bootstrap.main(intelliJCommandLineArguments, MainImplReplacement, "start");
+			main(intelliJCommandLineArguments, MainImplReplacement, "start");
 		}
 		catch (final Exception e)
 		{
-			e.printStackTrace(err);
-			exit(UnexpectedErrorExitCode);
+			throw new IllegalStateException("Couldn't invoke Bootstrap main()", e);
 		}
 	}
 }
