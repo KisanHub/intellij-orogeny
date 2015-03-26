@@ -9,12 +9,13 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-import static com.intellij.ide.Bootstrap.main;
-import static com.intellij.idea.Main.setFlags;
-import static com.intellij.openapi.application.PathManager.PROPERTY_HOME_PATH;
+import static com.kisanhub.intellij.useful.commandLine.Argument.*;
 import static java.lang.Boolean.TRUE;
-import static java.lang.System.*;
+import static java.lang.System.arraycopy;
+import static java.lang.System.setProperty;
 import static java.lang.Thread.currentThread;
 
 public final class ExternalDriver
@@ -28,42 +29,58 @@ public final class ExternalDriver
 	@NonNls
 	private static final String JavaAwtHeadless = "java.awt.headless";
 
-	@NotNull
-	private static final String[] Empty = {};
-
-	@NotNull
-	@NonNls
-	private static final String MainImplReplacement = "com.intellij.idea.MainImplReplacement";
-
 	@SuppressWarnings("ConstantConditions")
 	@NotNull
 	@NonNls
 	private static final String BooleanTrueString = TRUE.toString();
 
 	@NotNull
+	private static final Object Empty = new String[0];
+
+	@NotNull
+	@NonNls
+	private static final String MainImplReplacement = "com.intellij.idea.MainImplReplacement";
+
+	// com.intellij.openapi.application.PathManager.PROPERTY_HOME_PATH
+	@NotNull
+	@NonNls
+	private static final String PROPERTY_HOME_PATH = "idea.home.path";
+
+	// com.intellij.openapi.application.PathManager.LIB_FOLDER
+	@NotNull
+	@NonNls
+	private static final String LIB_FOLDER = "lib";
+
+	@NotNull
 	@NonNls
 	private final File homePath;
+
+	@NotNull
+	private final ClassLoader intelliJClassPath;
 
 	public ExternalDriver(@NotNull final File homePath)
 	{
 		this.homePath = homePath;
+
+		intelliJClassPath = createIntelliJClassPath();
 	}
 
 	public void invoke(@NotNull final String abstractCommandLineApplicationStarterExClassName, @NotNull final String... commandLineArguments)
 	{
-		forceIntelliJJarsOntoClassPath();
 		forceIntelliJHome();
-		forceIntelliJCommunityEditionToBeHeadlessAndInCommandLineMode();
-		invokeIntelliJWithOurApplication(abstractCommandLineApplicationStarterExClassName, commandLineArguments);
+		forceIntelliJToBeHeadless();
+		forceIntelliJToBeInCommandLineMode();
+		invokeIntelliJWithOurApplication(intelliJCommandLineArguments(abstractCommandLineApplicationStarterExClassName, commandLineArguments));
 	}
 
-	private void forceIntelliJJarsOntoClassPath()
+	@NotNull
+	private static String[] intelliJCommandLineArguments(@NotNull final String abstractCommandLineApplicationStarterExClassName, @NotNull final String... commandLineArguments)
 	{
-		final File intelliJJarPath = new File(homePath, "lib");
-		final Class<? extends ExternalDriver> aClass = getClass();
-		assert aClass != null;
-		@SuppressWarnings("ClassLoaderInstantiation") final JarFileClassLoader jarFileClassLoader = new JarFileClassLoader(aClass.getClassLoader(), intelliJJarPath);
-		currentThread().setContextClassLoader(jarFileClassLoader);
+		final int length = commandLineArguments.length;
+		final String[] intelliJCommandLineArguments = new String[length + 1];
+		intelliJCommandLineArguments[0] = abstractCommandLineApplicationStarterExClassName;
+		arraycopy(commandLineArguments, 0, intelliJCommandLineArguments, 1, length);
+		return intelliJCommandLineArguments;
 	}
 
 	@SuppressWarnings("AccessOfSystemProperties")
@@ -73,27 +90,91 @@ public final class ExternalDriver
 	}
 
 	@SuppressWarnings("AccessOfSystemProperties")
-	private static void forceIntelliJCommunityEditionToBeHeadlessAndInCommandLineMode()
+	private static void forceIntelliJToBeHeadless()
 	{
 		setProperty(JavaAwtHeadless, BooleanTrueString);
-		setFlags(Empty);
 	}
 
-	@SuppressWarnings({"StringConcatenationMissingWhitespace", "UseOfSystemOutOrSystemErr", "CallToSystemExit"})
-	private static void invokeIntelliJWithOurApplication(@NotNull final String abstractCommandLineApplicationStarterExClassName, @NotNull final String... commandLineArguments)
+	@SuppressWarnings("ClassLoaderInstantiation")
+	@NotNull
+	private ClassLoader createIntelliJClassPath()
 	{
-		final int length = commandLineArguments.length;
-		final String[] intelliJCommandLineArguments = new String[length + 1];
-		intelliJCommandLineArguments[0] = abstractCommandLineApplicationStarterExClassName;
-		arraycopy(commandLineArguments, 0, intelliJCommandLineArguments, 1, length);
+		final Thread currentThread = currentThread();
+		final File intelliJJarPath = new File(homePath, LIB_FOLDER);
+		final JarFileClassLoader jarFileClassLoader = new JarFileClassLoader(currentThread.getContextClassLoader(), intelliJJarPath);
+		currentThread.setContextClassLoader(jarFileClassLoader);
+		return jarFileClassLoader;
+	}
 
+	// Done this way because of ClassLoader issues
+	private void forceIntelliJToBeInCommandLineMode()
+	{
+		// setFlags(Empty);
+		executeStaticVoidMethod("com.intellij.idea.Main", "setFlags", argument(String[].class, Empty));
+	}
+
+	// Done this way because of ClassLoader issues
+	@SuppressWarnings({"StringConcatenationMissingWhitespace", "UseOfSystemOutOrSystemErr", "CallToSystemExit", "ConstantConditions"})
+	private void invokeIntelliJWithOurApplication(@NotNull final String... intelliJCommandLineArguments)
+	{
+		// main(intelliJCommandLineArguments, MainImplReplacement, "start");
+		executeStaticVoidMethod("com.intellij.ide.Bootstrap", "main", argument(intelliJCommandLineArguments), argument(MainImplReplacement), argument("start"));
+	}
+
+	private void executeStaticVoidMethod(@NotNull @NonNls final String className, @NonNls @NotNull final String name, @NotNull final Argument... arguments)
+	{
+		final Class<?> intelliJClass = loadIntelliJClass(className);
+		final Method intelliJClassMethod = getIntelliJClassMethod(intelliJClass, name, toParameterTypes(arguments));
+		invokeStaticVoidMethod(intelliJClassMethod, toValues(arguments));
+	}
+
+	@NotNull
+	private Class<?> loadIntelliJClass(@NotNull @NonNls final String className)
+	{
+		final Class<?> intelliJClass;
 		try
 		{
-			main(intelliJCommandLineArguments, MainImplReplacement, "start");
+			intelliJClass = intelliJClassPath.loadClass(className);
 		}
-		catch (final Exception e)
+		catch (final ClassNotFoundException e)
 		{
-			throw new IllegalStateException("Couldn't invoke Bootstrap main()", e);
+			throw new IllegalStateException(e);
+		}
+		assert intelliJClass != null;
+		return intelliJClass;
+	}
+
+	@NotNull
+	private static Method getIntelliJClassMethod(@NotNull final Class<?> intelliJClass, @NonNls @NotNull final String name, @NotNull final Class<?>... parameterTypes)
+	{
+		final Method method;
+		try
+		{
+			method = intelliJClass.getDeclaredMethod(name, parameterTypes);
+		}
+		catch (final NoSuchMethodException e)
+		{
+			throw new IllegalStateException(e);
+		}
+		assert method != null;
+		method.setAccessible(true);
+		return method;
+	}
+
+	private static void invokeStaticVoidMethod(@NotNull final Method method, @NotNull final Object... arguments)
+	{
+		try
+		{
+			method.invoke(null, arguments);
+		}
+		catch (final IllegalAccessException e)
+		{
+			throw new IllegalStateException(e);
+		}
+		catch (final InvocationTargetException e)
+		{
+			//noinspection ThrowInsideCatchBlockWhichIgnoresCaughtException
+			throw new IllegalStateException(e.getCause());
 		}
 	}
 }

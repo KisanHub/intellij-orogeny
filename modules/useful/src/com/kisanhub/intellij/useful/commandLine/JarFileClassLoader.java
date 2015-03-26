@@ -10,11 +10,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.net.*;
 
+@SuppressWarnings("CustomClassloader")
 public final class JarFileClassLoader extends URLClassLoader
 {
 	@NotNull
@@ -52,7 +50,9 @@ public final class JarFileClassLoader extends URLClassLoader
 			return;
 		}
 
-		addURL(fileToJarUrl(potentialJarFile));
+		final URL fileToJarUrl = fileToJarUrl(potentialJarFile);
+
+		addURL(fileToJarUrl);
 	}
 
 	@SuppressWarnings("HardcodedFileSeparator")
