@@ -74,7 +74,6 @@ public final class OrderEntryValidatingRootPolicy extends RootPolicy<ProjectVali
 		{
 			assert ERROR != null;
 			projectValidationMessagesRecorder.record(project(orderEntry), ERROR, getOrderEntryDescription(orderEntry, orderEntryClass));
-			return;
 		}
 
 		final OrderRootType[] allTypes = getAllTypes();

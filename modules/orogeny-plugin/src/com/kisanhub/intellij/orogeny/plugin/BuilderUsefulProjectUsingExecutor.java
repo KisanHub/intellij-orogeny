@@ -40,7 +40,7 @@ public final class BuilderUsefulProjectUsingExecutor implements UsingExecutor<Us
 
 		projectValidationMessagesRecorder.writeToPrintStream();
 
-		throw new IllegalStateException("TODO: rebuild artifacts");
+		throw new IllegalStateException("TODO: rebuild artifacts; some are built as part of rebuild, though");
 	}
 
 }
