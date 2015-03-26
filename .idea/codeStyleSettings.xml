@@ -23,12 +23,8 @@
         <option name="HTML_ALIGN_TEXT" value="true" />
         <option name="FORMATTER_TAGS_ENABLED" value="true" />
         <option name="FORMATTER_TAGS_ACCEPT_REGEXP" value="true" />
-        <JetCodeStyleSettings>
-          <option name="LBRACE_ON_NEXT_LINE" value="true" />
-        </JetCodeStyleSettings>
         <XML>
-          <option name="XML_TEXT_WRAP" value="0" />
-          <option name="XML_KEEP_WHITE_SPACES_INSIDE_CDATA" value="true" />
+          <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
         </XML>
         <editorconfig>
           <option name="ENABLED" value="false" />

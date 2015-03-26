@@ -1,5 +1,3 @@
 Manifest-Version: 1.0
-Class-Path: jopt-simple-4.5.jar jopt-simple-4.5-javadoc.jar jopt-simpl
- e-4.5-sources.jar
 Main-Class: com.kisanhub.intellij.orogeny.external.ExternalEntryPoint
 
