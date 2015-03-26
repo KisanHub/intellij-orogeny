@@ -38,7 +38,10 @@ public final class ExitingProjectValidationMessagesRecorder implements ProjectVa
 	public void record(@NotNull final Project project, @NotNull final CompilerMessageCategory compilerMessageCategory, @NonNls @NotNull final String message)
 	{
 		categorisedProjectValidationMessagesRecorder.record(project, compilerMessageCategory, message);
-		hasErrors = compilerMessageCategory == ERROR;
+		if (!hasErrors)
+		{
+			hasErrors = compilerMessageCategory == ERROR;
+		}
 	}
 
 	@SuppressWarnings("CallToSystemExit")

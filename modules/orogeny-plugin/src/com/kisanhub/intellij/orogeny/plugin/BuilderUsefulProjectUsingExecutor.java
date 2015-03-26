@@ -27,6 +27,8 @@ public final class BuilderUsefulProjectUsingExecutor implements UsingExecutor<Us
 		final ProjectValidator projectValidator = new ProjectValidator(usefulProject);
 		projectValidator.validateArtifacts(projectValidationMessagesRecorder);
 		projectValidator.validateModuleOrderEntriesInModuleDependencyOrder(projectValidationMessagesRecorder);
+		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
+
 		projectValidator.validateCanRunInspections(projectValidationMessagesRecorder);
 		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
 

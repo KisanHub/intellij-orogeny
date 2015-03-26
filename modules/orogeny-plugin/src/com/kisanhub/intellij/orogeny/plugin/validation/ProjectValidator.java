@@ -19,6 +19,7 @@ import java.util.List;
 import static com.intellij.codeInspection.ex.GlobalInspectionContextUtil.canRunInspections;
 import static com.intellij.openapi.compiler.CompilerMessageCategory.ERROR;
 import static com.intellij.openapi.compiler.CompilerMessageCategory.WARNING;
+import static com.kisanhub.intellij.orogeny.plugin.validation.OrderEntryValidatingRootPolicy.OrderEntryValidatingRootPolicyInstance;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 
@@ -67,7 +68,7 @@ public final class ProjectValidator
 
 	public void validateModuleOrderEntriesInModuleDependencyOrder(@NotNull final ProjectValidationMessagesRecorder projectValidationMessagesRecorder)
 	{
-		usefulProject.useModuleOrderEntriesInModuleDependencyOrder(OrderEntryValidatingRootPolicy.OrderEntryValidatingRootPolicyInstance, projectValidationMessagesRecorder);
+		usefulProject.useModuleOrderEntriesInModuleDependencyOrder(OrderEntryValidatingRootPolicyInstance, projectValidationMessagesRecorder);
 	}
 
 	public boolean validateCanRunInspections(@NotNull final ProjectValidationMessagesRecorder projectValidationMessagesRecorder)
