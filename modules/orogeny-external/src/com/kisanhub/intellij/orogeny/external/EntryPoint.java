@@ -5,17 +5,16 @@
 
 package com.kisanhub.intellij.orogeny.external;
 
-import com.kisanhub.intellij.useful.commandLine.ExternalDriver;
+import com.kisanhub.intellij.useful.commandLine.external.ExternalDriver;
 import joptsimple.*;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-import static com.kisanhub.intellij.orogeny.external.UsefulOptionParser.newImpossibleException;
 import static com.kisanhub.intellij.orogeny.external.UsefulOptionParser.printUnexpectedFailureAndExitAbnormally;
-import static com.kisanhub.intellij.useful.commandLine.ExternalDriver.MacOsXHomePath;
-import static java.lang.String.format;
+import static com.kisanhub.intellij.useful.commandLine.external.support.PathManagerHacker.DefaultConfigFolderName;
+import static com.kisanhub.intellij.useful.commandLine.external.support.PathManagerHacker.MacOsXHomePath;
 
 @SuppressWarnings("UtilityClass")
 public final class EntryPoint
@@ -23,6 +22,10 @@ public final class EntryPoint
 	@SuppressWarnings("ConstantNamingConvention")
 	@NotNull
 	private static final ArgumentAcceptingOptionSpec<File> home;
+
+	@SuppressWarnings("ConstantNamingConvention")
+	@NotNull
+	private static final ArgumentAcceptingOptionSpec<String> configFolder;
 
 	@SuppressWarnings("ConstantNamingConvention")
 	@NotNull
@@ -40,6 +43,8 @@ public final class EntryPoint
 	{
 		home = CommandLineArgumentsParser.accepts("home", "IntelliJ home path").withRequiredArg().describedAs(PATH).ofType(File.class).defaultsTo(new File(MacOsXHomePath));
 
+		configFolder = CommandLineArgumentsParser.accepts("config-folder", "IntelliJ config folder name").withRequiredArg().describedAs("NAME").ofType(String.class).defaultsTo(DefaultConfigFolderName);
+
 		project = CommandLineArgumentsParser.accepts("project", "IntelliJ project to build path").withRequiredArg().describedAs(PATH).ofType(File.class);
 	}
 
@@ -54,11 +59,13 @@ public final class EntryPoint
 
 		final File homePath = usefulOptionSet.getExtantDirectoryFileOptionValue(home);
 
+		final String configFolderName = usefulOptionSet.getOptionValue(configFolder);
+
 		final File projectPath = usefulOptionSet.getExtantFileOptionValue(project);
 
 		try
 		{
-			new ExternalDriver(homePath).invoke(abstractCommandLineApplicationStarterExClassName, projectPath.getPath());
+			new ExternalDriver(homePath, configFolderName).invoke(abstractCommandLineApplicationStarterExClassName, projectPath.getPath());
 		}
 		catch (final Throwable t)
 		{

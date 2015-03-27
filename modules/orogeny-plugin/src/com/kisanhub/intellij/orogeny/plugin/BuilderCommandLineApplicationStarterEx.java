@@ -12,6 +12,6 @@ public final class BuilderCommandLineApplicationStarterEx extends AbstractUseful
 {
 	public BuilderCommandLineApplicationStarterEx()
 	{
-		super(new BuilderUsefulProjectUsingExecutor());
+		super(false, new BuilderUsefulProjectUsingExecutor());
 	}
 }

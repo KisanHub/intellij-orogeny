@@ -3,7 +3,7 @@
  * Copyright © 2015 The developers of intellij-orogeny. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/KisanHub/developjs/master/COPYRIGHT.
  */
 
-package com.kisanhub.intellij.useful;
+package com.kisanhub.intellij.useful.moduleOrderEntries;
 
 import com.intellij.openapi.roots.RootPolicy;
 import org.jetbrains.annotations.NotNull;

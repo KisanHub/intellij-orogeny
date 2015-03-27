@@ -3,7 +3,7 @@
  * Copyright © 2015 The developers of intellij-orogeny. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/KisanHub/developjs/master/COPYRIGHT.
  */
 
-package com.kisanhub.intellij.useful.commandLine;
+package com.kisanhub.intellij.useful.commandLine.external.support;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;

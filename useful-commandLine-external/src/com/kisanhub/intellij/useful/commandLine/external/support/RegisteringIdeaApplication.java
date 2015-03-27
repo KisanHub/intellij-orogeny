@@ -3,9 +3,9 @@
  * Copyright © 2015 The developers of intellij-orogeny. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/KisanHub/developjs/master/COPYRIGHT.
  */
 
-package com.intellij.idea;
+package com.kisanhub.intellij.useful.commandLine.external.support;
 
-import com.intellij.idea.StartupUtil.AppStarter;
+import com.intellij.idea.IdeaApplication;
 import com.intellij.openapi.application.ApplicationStarter;
 import com.intellij.openapi.extensions.ExtensionPoint;
 import org.jetbrains.annotations.NotNull;
@@ -15,70 +15,51 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import static com.intellij.ExtensionPoints.APPLICATION_STARTER;
-import static com.intellij.ide.plugins.PluginManager.installExceptionHandler;
 import static com.intellij.ide.plugins.PluginManagerCore.getPlugins;
-import static com.intellij.idea.StartupUtil.prepareAndStart;
 import static com.intellij.openapi.extensions.Extensions.getRootArea;
-import static com.intellij.util.PlatformUtils.*;
 import static java.lang.Class.forName;
 import static java.lang.String.format;
-import static java.lang.System.setProperty;
 import static java.util.Locale.ENGLISH;
-import static javax.swing.SwingUtilities.invokeLater;
 
-@SuppressWarnings({"UnusedDeclaration", "UtilityClass"})
-public final class MainImplReplacement
+public final class RegisteringIdeaApplication extends IdeaApplication
 {
-	/**
-	 * Called from PluginManager via reflection.
-	 */
-	@SuppressWarnings("AccessOfSystemProperties")
-	public static void start(@NotNull final String... commandLineArguments)
+	@SuppressWarnings("AssignmentToCollectionOrArrayFieldFromParameter")
+	public RegisteringIdeaApplication(@NotNull final String... commandLineArguments)
 	{
-		if (commandLineArguments.length == 0)
+		super(commandLineArguments);
+	}
+
+	// Called from superclass constructor
+	@NotNull
+	@Override
+	public ApplicationStarter getStarter()
+	{
+		final String[] commandLineArguments = getCommandLineArguments();
+		assert commandLineArguments != null;
+
+		final String commandName = commandLineArguments[0];
+		assert commandName != null;
+
+		final ClassLoader classLoader = getClassLoader();
+		final ApplicationStarter ourApplication = createApplicationStarter(commandName, classLoader);
+		registerApplicationStarter(ourApplication);
+
+		return super.getStarter();
+	}
+
+	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
+	private static void registerApplicationStarter(@NotNull final ApplicationStarter applicationStarter)
+	{
+		// When this is called, it wipes out the registration of all ExtensionPoints
+		getPlugins();
+
+		final ExtensionPoint<ApplicationStarter> extensionPoint = getRootArea().getExtensionPoint(APPLICATION_STARTER);
+		// Do not register if already loaded as a plugin
+		if (extensionPoint.hasExtension(applicationStarter))
 		{
-			throw new IllegalStateException("commandLineArguments must contain at least a command");
+			return;
 		}
-		setProperty(PLATFORM_PREFIX_KEY, getPlatformPrefix(IDEA_CE_PREFIX));
-
-		prepareAndStart(commandLineArguments, new AppStarter()
-		{
-			@Override
-			public void start(final boolean newConfigFolder)
-			{
-				invokeLater(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						installExceptionHandler();
-
-						final IdeaApplication ideaApplication = new IdeaApplication(commandLineArguments)
-						{
-							@NotNull
-							@Override
-							public ApplicationStarter getStarter()
-							{
-								final String commandName = commandLineArguments[0];
-								assert commandName != null;
-								final ApplicationStarter ourApplication = createApplicationStarter(commandName, getClass().getClassLoader());
-								registerApplicationStarter(ourApplication);
-
-								return super.getStarter();
-							}
-						};
-						invokeLater(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								ideaApplication.run();
-							}
-						});
-					}
-				});
-			}
-		});
+		extensionPoint.registerExtension(applicationStarter);
 	}
 
 	@NotNull
@@ -125,6 +106,16 @@ public final class MainImplReplacement
 		}
 	}
 
+	@NotNull
+	private ClassLoader getClassLoader()
+	{
+		final Class<? extends RegisteringIdeaApplication> mainImplClass = getClass();
+		assert mainImplClass != null;
+		final ClassLoader classLoader = mainImplClass.getClassLoader();
+		assert classLoader != null;
+		return classLoader;
+	}
+
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	@NotNull
 	private static String couldNotInstantiateClass(@NotNull final String className)
@@ -132,19 +123,5 @@ public final class MainImplReplacement
 		final String format = format(ENGLISH, "Could not instantiate class '%1$s'", className); // NON-NLS
 		assert format != null;
 		return format;
-	}
-
-	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
-	private static void registerApplicationStarter(@NotNull final ApplicationStarter ourApplication)
-	{
-		// When this is called, it wipes out the registration of all ExtensionPoints
-		getPlugins();
-
-		final ExtensionPoint<ApplicationStarter> extensionPoint = getRootArea().getExtensionPoint(APPLICATION_STARTER);
-		extensionPoint.registerExtension(ourApplication);
-	}
-
-	private MainImplReplacement()
-	{
 	}
 }

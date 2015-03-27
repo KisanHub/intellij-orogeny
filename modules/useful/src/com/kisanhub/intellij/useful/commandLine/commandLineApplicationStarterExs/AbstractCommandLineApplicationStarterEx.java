@@ -27,10 +27,13 @@ public abstract class AbstractCommandLineApplicationStarterEx extends Applicatio
 	public static final int UnexpectedErrorExitCode = 2;
 
 	@SuppressWarnings({"AccessOfSystemProperties", "ConstantConditions"})
-	protected AbstractCommandLineApplicationStarterEx()
+	protected AbstractCommandLineApplicationStarterEx(final boolean forceUnitTestMode)
 	{
-		// Causes ApplicationManager.getInstance().isUnitTestMode() to be true
-		setProperty(IDEA_IS_UNIT_TEST, TRUE.toString());
+		if (forceUnitTestMode)
+		{
+			// Causes ApplicationManager.getInstance().isUnitTestMode() to be true
+			setProperty(IDEA_IS_UNIT_TEST, TRUE.toString());
+		}
 	}
 
 	@Override
@@ -58,7 +61,7 @@ public abstract class AbstractCommandLineApplicationStarterEx extends Applicatio
 	@Override
 	public final void processExternalCommandLine(@NotNull final String[] args, @Nullable final String currentDirectory)
 	{
-		throw new IllegalStateException("Why?");
+		main(args);
 	}
 
 	@Override
@@ -105,29 +108,35 @@ public abstract class AbstractCommandLineApplicationStarterEx extends Applicatio
 		final int exitCode;
 		try
 		{
-			// Not convinced we need to use runReadAction, but it can't hurt
-			final int[] wrappedExitCode = new int[1];
-			final ApplicationEx application = application();
-			application.runReadAction(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					wrappedExitCode[0] = execute(commandLineArgumentsExcludingCommandName);
-				}
-			});
-			application.exit();
-			// Causes System.exit(0) - not what we want
-			// application.exit(true, true);
-			exitCode = wrappedExitCode[0];
+			exitCode = execute(commandLineArgumentsExcludingCommandName);
 		}
 		catch (final Throwable e)
 		{
+			assert err != null;
 			e.printStackTrace(err);
 			exit(UnexpectedErrorExitCode);
 			return;
 		}
 		exit(exitCode);
+	}
+
+	private int oldCode(@NotNull final String[] commandLineArgumentsExcludingCommandName)
+	{
+		final int[] wrappedExitCode = new int[1];
+		// Not convinced we need to use runReadAction
+		final ApplicationEx application = application();
+		application.runReadAction(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				wrappedExitCode[0] = execute(commandLineArgumentsExcludingCommandName);
+			}
+		});
+		application.exit();
+		// Causes System.exit(0) - not what we want
+		// application.exit(true, true);
+		return wrappedExitCode[0];
 	}
 
 	protected abstract int execute(@NotNull final String... commandLineArgumentsExcludingCommandName);

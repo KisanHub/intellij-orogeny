@@ -3,13 +3,13 @@
  * Copyright © 2015 The developers of intellij-orogeny. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/KisanHub/developjs/master/COPYRIGHT.
  */
 
-package com.kisanhub.intellij.useful.rootPolicies;
+package com.kisanhub.intellij.useful.moduleOrderEntries;
 
 import com.intellij.openapi.roots.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings("AbstractClassExtendsConcreteClass")
+@SuppressWarnings({"AbstractClassExtendsConcreteClass", "AbstractClassWithOnlyOneDirectInheritor"})
 public abstract class PerOrderEntryRootPolicy<R> extends RootPolicy<R>
 {
 	protected PerOrderEntryRootPolicy()

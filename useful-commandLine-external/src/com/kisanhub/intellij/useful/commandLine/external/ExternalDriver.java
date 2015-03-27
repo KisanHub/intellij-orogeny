@@ -3,8 +3,11 @@
  * Copyright © 2015 The developers of intellij-orogeny. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/KisanHub/developjs/master/COPYRIGHT.
  */
 
-package com.kisanhub.intellij.useful.commandLine;
+package com.kisanhub.intellij.useful.commandLine.external;
 
+import com.kisanhub.intellij.useful.commandLine.external.support.Argument;
+import com.kisanhub.intellij.useful.commandLine.external.support.JarFileClassLoader;
+import com.kisanhub.intellij.useful.commandLine.external.support.PathManagerHacker;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,19 +15,15 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static com.kisanhub.intellij.useful.commandLine.Argument.*;
+import static com.kisanhub.intellij.useful.commandLine.external.support.Argument.*;
 import static java.lang.Boolean.TRUE;
 import static java.lang.System.arraycopy;
 import static java.lang.System.setProperty;
 import static java.lang.Thread.currentThread;
 
+@SuppressWarnings("ClassNamePrefixedWithPackageName")
 public final class ExternalDriver
 {
-	@SuppressWarnings("HardcodedFileSeparator")
-	@NonNls
-	@NotNull
-	public static final String MacOsXHomePath = "/Applications/IntelliJ IDEA 14 CE.app/Contents";
-
 	@NotNull
 	@NonNls
 	private static final String JavaAwtHeadless = "java.awt.headless";
@@ -41,33 +40,23 @@ public final class ExternalDriver
 	@NonNls
 	private static final String MainImplReplacement = "com.intellij.idea.MainImplReplacement";
 
-	// com.intellij.openapi.application.PathManager.PROPERTY_HOME_PATH
 	@NotNull
 	@NonNls
-	private static final String PROPERTY_HOME_PATH = "idea.home.path";
-
-	// com.intellij.openapi.application.PathManager.LIB_FOLDER
-	@NotNull
-	@NonNls
-	private static final String LIB_FOLDER = "lib";
+	private final PathManagerHacker pathManagerHacker;
 
 	@NotNull
-	@NonNls
-	private final File homePath;
+	private final ClassLoader intelliJClassLoader;
 
-	@NotNull
-	private final ClassLoader intelliJClassPath;
-
-	public ExternalDriver(@NotNull final File homePath)
+	public ExternalDriver(@NotNull final File homePath, @NotNull final String configFolderName)
 	{
-		this.homePath = homePath;
+		pathManagerHacker = new PathManagerHacker(homePath, configFolderName);
 
-		intelliJClassPath = createIntelliJClassPath();
+		intelliJClassLoader = createIntelliJClassPath();
 	}
 
 	public void invoke(@NotNull final String abstractCommandLineApplicationStarterExClassName, @NotNull final String... commandLineArguments)
 	{
-		forceIntelliJHome();
+		pathManagerHacker.configureIntelliJPathManager();
 		forceIntelliJToBeHeadless();
 		forceIntelliJToBeInCommandLineMode();
 		invokeIntelliJWithOurApplication(intelliJCommandLineArguments(abstractCommandLineApplicationStarterExClassName, commandLineArguments));
@@ -84,12 +73,6 @@ public final class ExternalDriver
 	}
 
 	@SuppressWarnings("AccessOfSystemProperties")
-	private void forceIntelliJHome()
-	{
-		setProperty(PROPERTY_HOME_PATH, homePath.getPath());
-	}
-
-	@SuppressWarnings("AccessOfSystemProperties")
 	private static void forceIntelliJToBeHeadless()
 	{
 		setProperty(JavaAwtHeadless, BooleanTrueString);
@@ -100,7 +83,7 @@ public final class ExternalDriver
 	private ClassLoader createIntelliJClassPath()
 	{
 		final Thread currentThread = currentThread();
-		final File intelliJJarPath = new File(homePath, LIB_FOLDER);
+		final File intelliJJarPath = pathManagerHacker.intelliJJarPath();
 		final JarFileClassLoader jarFileClassLoader = new JarFileClassLoader(currentThread.getContextClassLoader(), intelliJJarPath);
 		currentThread.setContextClassLoader(jarFileClassLoader);
 		return jarFileClassLoader;
@@ -134,7 +117,7 @@ public final class ExternalDriver
 		final Class<?> intelliJClass;
 		try
 		{
-			intelliJClass = intelliJClassPath.loadClass(className);
+			intelliJClass = intelliJClassLoader.loadClass(className);
 		}
 		catch (final ClassNotFoundException e)
 		{

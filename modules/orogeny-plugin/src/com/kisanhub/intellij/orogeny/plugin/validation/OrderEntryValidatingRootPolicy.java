@@ -10,6 +10,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.ProjectValidationMessagesRecorder;
+import com.kisanhub.intellij.useful.moduleOrderEntries.NonNullPerOrderEntryRootPolicy;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.openapi.compiler.CompilerMessageCategory.ERROR;
@@ -17,7 +18,7 @@ import static com.intellij.openapi.roots.OrderRootType.getAllTypes;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 
-public final class OrderEntryValidatingRootPolicy extends RootPolicy<ProjectValidationMessagesRecorder>
+public final class OrderEntryValidatingRootPolicy extends NonNullPerOrderEntryRootPolicy<ProjectValidationMessagesRecorder>
 {
 	@NotNull
 	public static final RootPolicy<ProjectValidationMessagesRecorder> OrderEntryValidatingRootPolicyInstance = new OrderEntryValidatingRootPolicy();
@@ -28,38 +29,43 @@ public final class OrderEntryValidatingRootPolicy extends RootPolicy<ProjectVali
 	{
 	}
 	
+	@NotNull
 	@SuppressWarnings("RefusedBequest")
 	@Override
-	public ProjectValidationMessagesRecorder visitModuleSourceOrderEntry(@NotNull final ModuleSourceOrderEntry moduleSourceOrderEntry, @NotNull final ProjectValidationMessagesRecorder value)
+	public ProjectValidationMessagesRecorder visitModuleSourceOrderEntry(@NotNull final ModuleSourceOrderEntry moduleSourceOrderEntry, @NotNull final ProjectValidationMessagesRecorder initialValue)
 	{
-		validate(value, moduleSourceOrderEntry, ModuleSourceOrderEntry.class);
-		return value;
+		validate(initialValue, moduleSourceOrderEntry, ModuleSourceOrderEntry.class);
+		return initialValue;
 	}
 
+	@NotNull
 	@SuppressWarnings("RefusedBequest")
 	@Override
-	public ProjectValidationMessagesRecorder visitLibraryOrderEntry(@NotNull final LibraryOrderEntry libraryOrderEntry, @NotNull final ProjectValidationMessagesRecorder value)
+	public ProjectValidationMessagesRecorder visitLibraryOrderEntry(@NotNull final LibraryOrderEntry libraryOrderEntry, @NotNull final ProjectValidationMessagesRecorder initialValue)
 	{
-		validate(value, libraryOrderEntry, LibraryOrderEntry.class);
-		return value;
+		validate(initialValue, libraryOrderEntry, LibraryOrderEntry.class);
+		return initialValue;
 	}
 
+	@NotNull
 	@SuppressWarnings("RefusedBequest")
 	@Override
-	public ProjectValidationMessagesRecorder visitModuleOrderEntry(@NotNull final ModuleOrderEntry moduleOrderEntry, @NotNull final ProjectValidationMessagesRecorder value)
+	public ProjectValidationMessagesRecorder visitModuleOrderEntry(@NotNull final ModuleOrderEntry moduleOrderEntry, @NotNull final ProjectValidationMessagesRecorder initialValue)
 	{
-		validate(value, moduleOrderEntry, ModuleOrderEntry.class);
-		return value;
+		validate(initialValue, moduleOrderEntry, ModuleOrderEntry.class);
+		return initialValue;
 	}
 
+	@NotNull
 	@SuppressWarnings("RefusedBequest")
 	@Override
-	public ProjectValidationMessagesRecorder visitModuleJdkOrderEntry(@NotNull final ModuleJdkOrderEntry jdkOrderEntry, @NotNull final ProjectValidationMessagesRecorder value)
+	public ProjectValidationMessagesRecorder visitModuleJdkOrderEntry(@NotNull final ModuleJdkOrderEntry jdkOrderEntry, @NotNull final ProjectValidationMessagesRecorder initialValue)
 	{
-		validate(value, jdkOrderEntry, ModuleJdkOrderEntry.class);
-		return value;
+		validate(initialValue, jdkOrderEntry, ModuleJdkOrderEntry.class);
+		return initialValue;
 	}
 
+	@NotNull
 	@SuppressWarnings("RefusedBequest")
 	@Override
 	public ProjectValidationMessagesRecorder visitInheritedJdkOrderEntry(@NotNull final InheritedJdkOrderEntry inheritedJdkOrderEntry, @NotNull final ProjectValidationMessagesRecorder initialValue)

@@ -5,15 +5,13 @@
 
 package com.kisanhub.intellij.useful.commandLine.commandLineApplicationStarterExs;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
+import com.intellij.openapi.project.ex.ProjectEx;
+import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.util.InvalidDataException;
-import com.kisanhub.intellij.useful.commandLine.usingExecutors.UsingExecutor;
 import org.jdom.JDOMException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.List;
 
 import static java.lang.String.format;
 import static java.lang.System.err;
@@ -23,10 +21,11 @@ import static java.util.Locale.ENGLISH;
 public abstract class AbstractProjectUsingCommandLineApplicationStarterEx extends AbstractCommandLineApplicationStarterEx
 {
 	@NotNull
-	private final UsingExecutor<Project> projectUsingExecutor;
+	private final UsingExecutor<ProjectEx> projectUsingExecutor;
 
-	protected AbstractProjectUsingCommandLineApplicationStarterEx(@NotNull final UsingExecutor<Project> projectUsingExecutor)
+	protected AbstractProjectUsingCommandLineApplicationStarterEx(final boolean forceUnitTestMode, @NotNull final UsingExecutor<ProjectEx> projectUsingExecutor)
 	{
+		super(forceUnitTestMode);
 		this.projectUsingExecutor = projectUsingExecutor;
 	}
 
@@ -35,16 +34,18 @@ public abstract class AbstractProjectUsingCommandLineApplicationStarterEx extend
 	{
 		final String projectFilePathString = commandLineArgumentsExcludingCommandName[0];
 		assert projectFilePathString != null;
-		return useProject(projectFilePathString, projectUsingExecutor);
+		return useProject(projectFilePathString);
 	}
 
-	public static int useProject(@NotNull final String projectFilePathString, @NotNull final UsingExecutor<Project> projectUsingUsingExecutor)
+	public int useProject(@NotNull final String projectFilePathString)
 	{
-		final ProjectManager projectManager = ProjectManager.getInstance();
-		final Project project;
+		final ProjectManagerEx projectManagerEx = ProjectManagerEx.getInstanceEx();
+		projectManagerEx.blockReloadingProjectOnExternalChanges();
+
+		final ProjectEx project;
 		try
 		{
-			project = projectManager.loadAndOpenProject(projectFilePathString);
+			project = (ProjectEx) projectManagerEx.loadAndOpenProject(projectFilePathString);
 			assert project != null;
 		}
 		catch (final IOException ignored)
@@ -67,11 +68,11 @@ public abstract class AbstractProjectUsingCommandLineApplicationStarterEx extend
 		}
 		try
 		{
-			projectUsingUsingExecutor.use(project);
+			projectUsingExecutor.use(project);
 		}
 		finally
 		{
-			projectManager.closeProject(project);
+			projectManagerEx.closeProject(project);
 		}
 		return SuccessExitCode;
 	}

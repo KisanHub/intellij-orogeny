@@ -15,7 +15,8 @@ import com.intellij.openapi.compiler.CompilerManager;
 import com.intellij.openapi.components.PathMacroManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.project.Project;
+import com.intellij.openapi.module.ModulePointerManager;
+import com.intellij.openapi.project.ex.ProjectEx;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.roots.RootPolicy;
 import com.intellij.openapi.util.NotNullLazyValue;
@@ -26,6 +27,7 @@ import com.intellij.ui.content.ContentManager;
 import com.kisanhub.intellij.useful.inspection.ProblemRefElementHandler;
 import com.kisanhub.intellij.useful.inspection.UsefulGlobalInspectionContextImpl;
 import com.kisanhub.intellij.useful.inspection.inspectionToolPresentationFactories.UsefulInspectionToolPresentationFactory;
+import com.kisanhub.intellij.useful.moduleOrderEntries.ProcessModuleOrder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,11 +37,12 @@ import java.util.Set;
 
 import static java.lang.System.getProperty;
 
+@SuppressWarnings({"ClassNamePrefixedWithPackageName", "ClassWithTooManyFields"})
 public final class UsefulProject implements ProcessModuleOrder
 {
 	@SuppressWarnings("PublicField")
 	@NotNull
-	public final Project project;
+	public final ProjectEx project;
 
 	@SuppressWarnings("PublicField")
 	@NotNull
@@ -52,6 +55,10 @@ public final class UsefulProject implements ProcessModuleOrder
 	@SuppressWarnings("PublicField")
 	@NotNull
 	public final ModuleManager moduleManager;
+
+	@SuppressWarnings("PublicField")
+	@NotNull
+	public final ModulePointerManager modulePointerManager;
 
 	@SuppressWarnings("PublicField")
 	@NotNull
@@ -86,12 +93,13 @@ public final class UsefulProject implements ProcessModuleOrder
 	public final AnalysisScope analysisScope;
 
 	// project may be ProjectEx
-	public UsefulProject(@NotNull final Project project)
+	public UsefulProject(@NotNull final ProjectEx project)
 	{
 		this.project = project;
 		projectRootManager = projectRootManager();
 		artifactManager = artifactManager();
 		moduleManager = moduleManager();
+		modulePointerManager = modulePointerManager();
 		psiManager = psiManager();
 		pathMacroManager = pathMacroManager();
 		compilerManager = compilerManager();
@@ -134,7 +142,6 @@ public final class UsefulProject implements ProcessModuleOrder
 		assert contentManager != null;
 
 		final Set<GlobalInspectionContextImpl> runningContexts = inspectionManagerEx.getRunningContexts();
-		assert runningContexts != null;
 
 		final UsefulInspectionToolPresentationFactory inspectionToolPresentationFactory = new UsefulInspectionToolPresentationFactory(problemRefElementHandler);
 		final UsefulGlobalInspectionContextImpl usefulGlobalInspectionContext = new UsefulGlobalInspectionContextImpl(project, contentManager, runningContexts, inspectionProfile, inspectionToolPresentationFactory);
@@ -164,6 +171,14 @@ public final class UsefulProject implements ProcessModuleOrder
 		@SuppressWarnings("LocalVariableHidesMemberVariable") final ModuleManager moduleManager = ModuleManager.getInstance(project);
 		assert moduleManager != null;
 		return moduleManager;
+	}
+
+	@NotNull
+	private ModulePointerManager modulePointerManager()
+	{
+		@SuppressWarnings("LocalVariableHidesMemberVariable") final ModulePointerManager modulePointerManager = ModulePointerManager.getInstance(project);
+		assert modulePointerManager != null;
+		return modulePointerManager;
 	}
 
 	@NotNull

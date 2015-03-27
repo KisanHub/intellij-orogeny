@@ -5,19 +5,19 @@
 
 package com.kisanhub.intellij.useful.commandLine.commandLineApplicationStarterExs;
 
-import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ex.ProjectEx;
 import com.kisanhub.intellij.useful.UsefulProject;
-import com.kisanhub.intellij.useful.commandLine.usingExecutors.UsingExecutor;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
 public abstract class AbstractUsefulProjectUsingCommandLineApplicationStarterEx extends AbstractProjectUsingCommandLineApplicationStarterEx
 {
-	protected AbstractUsefulProjectUsingCommandLineApplicationStarterEx(@NotNull final UsingExecutor<UsefulProject> usefulProjectUsingExecutor)
+	protected AbstractUsefulProjectUsingCommandLineApplicationStarterEx(final boolean forceUnitTestMode, @NotNull final UsingExecutor<UsefulProject> usefulProjectUsingExecutor)
 	{
-		super(new UsingExecutor<Project>()
+		super(forceUnitTestMode, new UsingExecutor<ProjectEx>()
 		{
 			@Override
-			public void use(@NotNull final Project using)
+			public void use(@NotNull final ProjectEx using)
 			{
 				usefulProjectUsingExecutor.use(new UsefulProject(using));
 			}

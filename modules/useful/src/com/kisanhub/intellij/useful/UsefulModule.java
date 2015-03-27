@@ -8,9 +8,11 @@ package com.kisanhub.intellij.useful;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.RootPolicy;
+import com.kisanhub.intellij.useful.moduleOrderEntries.ProcessModuleOrder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("ClassNamePrefixedWithPackageName")
 public final class UsefulModule implements ProcessModuleOrder
 {
 	@SuppressWarnings("PublicField")
@@ -31,8 +33,7 @@ public final class UsefulModule implements ProcessModuleOrder
 	@Override
 	public <R> void useModuleOrderEntriesInModuleDependencyOrder(@NotNull final RootPolicy<R> rootPolicy, @Nullable final R initialValue)
 	{
-		@Nullable final R result = moduleRootManager.processOrder(rootPolicy, initialValue);
-		assert result == null;
+		moduleRootManager.processOrder(rootPolicy, initialValue);
 	}
 
 	@NotNull
