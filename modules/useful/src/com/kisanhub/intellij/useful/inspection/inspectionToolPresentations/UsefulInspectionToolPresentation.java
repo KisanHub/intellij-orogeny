@@ -57,21 +57,23 @@ public final class UsefulInspectionToolPresentation extends AbstractInspectionTo
 		for (final CommonProblemDescriptor commonProblemDescriptor : descriptions)
 		{
 			@Nullable final PsiElement psiElement;
-
+			final int lineNumber;
 			if (commonProblemDescriptor instanceof ProblemDescriptor)
 			{
 				final ProblemDescriptor problemDescriptor = (ProblemDescriptor) commonProblemDescriptor;
 				psiElement = problemDescriptor.getPsiElement();
+				lineNumber = problemDescriptor.getLineNumber();
 			}
 			else
 			{
 				psiElement = actualRefElement.getElement();
+				lineNumber = -1;
 			}
 
 			final HighlightSeverity severity = severity(actualRefElement);
 			final String descriptionMessage = renderDescriptionMessage(commonProblemDescriptor, psiElement, AppendLineNumber);
 
-			problemRefElementHandler.handleProblemRefElement(actualRefElement, filterSuppressed, psiElement, severity, descriptionMessage);
+			problemRefElementHandler.handleProblemRefElement(actualRefElement, filterSuppressed, psiElement, severity, inspectionToolGeneralName(), descriptionMessage, lineNumber);
 		}
 	}
 
@@ -89,7 +91,7 @@ public final class UsefulInspectionToolPresentation extends AbstractInspectionTo
 			return GENERIC_SERVER_ERROR_OR_WARNING;
 		}
 
-		final String severityDelegateName = inspectionToolWrapper.getShortName();
+		final String severityDelegateName = inspectionToolGeneralName();
 		final Tools tools = globalInspectionContext.getTools().get(severityDelegateName);
 		if (tools != null)
 		{
@@ -105,6 +107,12 @@ public final class UsefulInspectionToolPresentation extends AbstractInspectionTo
 		}
 
 		return getSeverity(psiElement, severityDelegateName);
+	}
+
+	@NotNull
+	private String inspectionToolGeneralName()
+	{
+		return inspectionToolWrapper.getShortName();
 	}
 
 	@NotNull

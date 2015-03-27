@@ -50,15 +50,6 @@ public final class UsefulGlobalInspectionContextImpl extends GlobalInspectionCon
 		return currentProfile;
 	}
 
-	@Override
-	@NotNull
-	public Map<String, Tools> getTools()
-	{
-		final Map<String, Tools> tools = super.getTools();
-		assert tools != null;
-		return tools;
-	}
-
 	@SuppressWarnings("RefusedBequest")
 	@NotNull
 	@Override

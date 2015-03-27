@@ -11,6 +11,7 @@ import com.intellij.openapi.roots.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.ProjectValidationMessagesRecorder;
 import com.kisanhub.intellij.useful.moduleOrderEntries.NonNullPerOrderEntryRootPolicy;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.openapi.compiler.CompilerMessageCategory.ERROR;
@@ -20,6 +21,10 @@ import static java.util.Locale.ENGLISH;
 
 public final class OrderEntryValidatingRootPolicy extends NonNullPerOrderEntryRootPolicy<ProjectValidationMessagesRecorder>
 {
+	@NonNls
+	@NotNull
+	private static final String OrderEntrySubCategory = "OrderEntry";
+
 	@NotNull
 	public static final RootPolicy<ProjectValidationMessagesRecorder> OrderEntryValidatingRootPolicyInstance = new OrderEntryValidatingRootPolicy();
 
@@ -79,7 +84,7 @@ public final class OrderEntryValidatingRootPolicy extends NonNullPerOrderEntryRo
 		if (!orderEntry.isValid())
 		{
 			assert ERROR != null;
-			projectValidationMessagesRecorder.record(project(orderEntry), ERROR, getOrderEntryDescription(orderEntry, orderEntryClass));
+			projectValidationMessagesRecorder.record(ERROR, OrderEntrySubCategory, getOrderEntryDescription(orderEntry, orderEntryClass));
 		}
 
 		final OrderRootType[] allTypes = getAllTypes();
@@ -100,7 +105,7 @@ public final class OrderEntryValidatingRootPolicy extends NonNullPerOrderEntryRo
 				assert ERROR != null;
 				final String format = format(ENGLISH, "Root '%1$s' of type '%2$s' in %3$s", file.getName(), orderRootType.name(), getOrderEntryDescription(orderEntry,orderEntryClass)); //NON-NLS
 				assert format != null;
-				projectValidationMessagesRecorder.record(project(orderEntry), ERROR, format);
+				projectValidationMessagesRecorder.record(ERROR, OrderEntrySubCategory, format);
 			}
 		}
 	}

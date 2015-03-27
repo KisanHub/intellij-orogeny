@@ -6,7 +6,6 @@
 package com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders;
 
 import com.intellij.openapi.compiler.CompilerMessageCategory;
-import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,9 +34,9 @@ public final class ExitingProjectValidationMessagesRecorder implements ProjectVa
 	}
 
 	@Override
-	public void record(@NotNull final Project project, @NotNull final CompilerMessageCategory compilerMessageCategory, @NonNls @NotNull final String message)
+	public void record(@NotNull final CompilerMessageCategory compilerMessageCategory, @NonNls @NotNull final String subCategory, @NonNls @NotNull final String message)
 	{
-		categorisedProjectValidationMessagesRecorder.record(project, compilerMessageCategory, message);
+		categorisedProjectValidationMessagesRecorder.record(compilerMessageCategory, subCategory, message);
 		if (!hasErrors)
 		{
 			hasErrors = compilerMessageCategory == ERROR;

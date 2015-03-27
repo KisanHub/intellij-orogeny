@@ -12,15 +12,13 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.SmartPsiElementPointer;
-import com.kisanhub.intellij.useful.inspection.ProblemRefElementHandler;
 import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.ProjectValidationMessagesRecorder;
+import com.kisanhub.intellij.useful.inspection.ProblemRefElementHandler;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static com.intellij.openapi.compiler.CompilerMessageCategory.ERROR;
-import static com.intellij.openapi.compiler.CompilerMessageCategory.INFORMATION;
-import static com.intellij.openapi.compiler.CompilerMessageCategory.WARNING;
+import static com.intellij.openapi.compiler.CompilerMessageCategory.*;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 
@@ -34,9 +32,9 @@ public final class ValidatingProblemRefElementHandler implements ProblemRefEleme
 		this.projectValidationMessagesRecorder = projectValidationMessagesRecorder;
 	}
 
-	@SuppressWarnings("IfMayBeConditional")
+	@SuppressWarnings({"IfMayBeConditional", "MethodWithTooManyParameters"})
 	@Override
-	public void handleProblemRefElement(@NotNull final RefElement refElement, final boolean filterSuppressed, @Nullable final PsiElement psiElement, @NotNull final HighlightSeverity severity, @NotNull final String descriptionMessage)
+	public void handleProblemRefElement(@NotNull final RefElement refElement, final boolean filterSuppressed, @Nullable final PsiElement psiElement, @NotNull final HighlightSeverity severity, @NotNull final String inspectionToolName, @NotNull final String descriptionMessage, final int lineNumber)
 	{
 		final CompilerMessageCategory compilerMessageCategory;
 		if (severity.compareTo(HighlightSeverity.WEAK_WARNING) <= 0)
@@ -56,9 +54,9 @@ public final class ValidatingProblemRefElementHandler implements ProblemRefEleme
 
 		@NonNls final String filePath = filePath(refElement);
 
-		final String format = format(ENGLISH, "%1$s ('%2$s')", descriptionMessage, filePath); //NON-NLS
+		final String format = format(ENGLISH, "%1$s %2$s%3$s", descriptionMessage, filePath, lineNumber > -1 ? ":" + lineNumber : ""); //NON-NLS
 		assert format != null;
-		projectValidationMessagesRecorder.record(getSmartPsiElementPointer(refElement).getProject(), compilerMessageCategory, format);
+		projectValidationMessagesRecorder.record(compilerMessageCategory, inspectionToolName, format);
 	}
 
 	@NotNull

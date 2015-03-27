@@ -6,18 +6,14 @@
 package com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders;
 
 import com.intellij.openapi.compiler.CompilerMessageCategory;
-import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.PrintStream;
 import java.util.*;
 
-import static com.intellij.openapi.compiler.CompilerMessageCategory.ERROR;
 import static com.intellij.openapi.compiler.CompilerMessageCategory.values;
 import static java.lang.String.format;
-import static java.lang.System.err;
-import static java.lang.System.exit;
 import static java.util.Locale.ENGLISH;
 
 public final class CategorisedProjectValidationMessagesRecorder implements ProjectValidationMessagesRecorder
@@ -41,14 +37,14 @@ public final class CategorisedProjectValidationMessagesRecorder implements Proje
 		recordsCategorised = new EnumMap<CompilerMessageCategory, Set<String>>(CompilerMessageCategory.class);
 		for (final CompilerMessageCategory value : allCompilerMessageCategories())
 		{
-			recordsCategorised.put(value, new LinkedHashSet<String>(1000));
+			recordsCategorised.put(value, new TreeSet<String>());
 		}
 	}
 
 	@Override
-	public void record(@NotNull final Project project, @NotNull final CompilerMessageCategory compilerMessageCategory, @NonNls @NotNull final String message)
+	public void record(@NotNull final CompilerMessageCategory compilerMessageCategory, @NonNls @NotNull final String subCategory, @NonNls @NotNull final String message)
 	{
-		final String format = format(ENGLISH, "%1$s:%2$s:%3$s", project.getName(), compilerMessageCategory.name(), message);//NON-NLS
+		final String format = format(ENGLISH, "%1$s:%2$s:%3$s", compilerMessageCategory.name(), subCategory, message);//NON-NLS
 		final Set<String> strings = getMessages(compilerMessageCategory);
 		strings.add(format);
 	}

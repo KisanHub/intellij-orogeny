@@ -12,5 +12,5 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ProjectValidationMessagesRecorder
 {
-	void record(@NotNull final Project project, @NotNull final CompilerMessageCategory compilerMessageCategory, @NonNls @NotNull final String message);
+	void record(@NotNull final CompilerMessageCategory compilerMessageCategory, @NonNls @NotNull final String subCategory, @NonNls @NotNull final String message);
 }

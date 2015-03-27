@@ -11,7 +11,9 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface ProblemRefElementHandler
 {
-	void handleProblemRefElement(@NotNull final RefElement refElement, final boolean filterSuppressed, @Nullable final PsiElement psiElement, @NotNull final HighlightSeverity severity, @NotNull final String descriptionMessage);
+	@SuppressWarnings("MethodWithTooManyParameters")
+	void handleProblemRefElement(@NotNull final RefElement refElement, final boolean filterSuppressed, @Nullable final PsiElement psiElement, @NotNull final HighlightSeverity severity, @NotNull final String inspectionToolName, @NotNull final String descriptionMessage, final int lineNumber);
 }

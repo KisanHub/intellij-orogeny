@@ -78,7 +78,7 @@ public final class UsefulOptionSet
 		final V optionValue;
 		try
 		{
-			optionValue = (V) optionSet.valueOf(option);
+			optionValue = optionSet.valueOf(option);
 		}
 		catch (final OptionException ignored)
 		{

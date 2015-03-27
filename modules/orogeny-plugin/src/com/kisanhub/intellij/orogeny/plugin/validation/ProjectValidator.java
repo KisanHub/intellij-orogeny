@@ -27,6 +27,14 @@ public final class ProjectValidator
 {
 	@NonNls
 	@NotNull
+	private static final String ArtifactSubCategory = "Artifact";
+
+	@NonNls
+	@NotNull
+	private static final String InspectionSubCategory = "Inspection";
+
+	@NonNls
+	@NotNull
 	private static final String InvalidId = "invalid";
 
 	@NotNull
@@ -59,7 +67,7 @@ public final class ProjectValidator
 				assert format != null;
 
 				assert ERROR != null;
-				projectValidationMessagesRecorder.record(project, ERROR, format);
+				projectValidationMessagesRecorder.record(ERROR, ArtifactSubCategory, format);
 				allArtifactsValid = false;
 			}
 		}
@@ -73,13 +81,12 @@ public final class ProjectValidator
 
 	public boolean validateCanRunInspections(@NotNull final ProjectValidationMessagesRecorder projectValidationMessagesRecorder)
 	{
-
 		if (canRunInspections(project, false))
 		{
 			return true;
 		}
 		assert WARNING != null;
-		projectValidationMessagesRecorder.record(project, WARNING, "We can not run inspections");
+		projectValidationMessagesRecorder.record(WARNING, InspectionSubCategory, "We can not run inspections");
 		return false;
 	}
 

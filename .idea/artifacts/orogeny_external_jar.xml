@@ -11,6 +11,7 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/library/jopt-simple/current/jopt-simple-4.5.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/library/jopt-simple/current/jopt-simple-4.5-javadoc.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/library/jopt-simple/current/jopt-simple-4.5-sources.jar" path-in-jar="/" />
+      <element id="module-output" name="useful-commandLine-external" />
     </root>
   </artifact>
 </component>

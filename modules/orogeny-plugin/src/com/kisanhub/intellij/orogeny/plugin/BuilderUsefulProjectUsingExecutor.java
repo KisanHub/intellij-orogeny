@@ -5,11 +5,6 @@
 
 package com.kisanhub.intellij.orogeny.plugin;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
-import com.intellij.openapi.projectRoots.ProjectJdkTable;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.kisanhub.intellij.orogeny.plugin.rebuilding.ProjectOfflineRebuilder;
 import com.kisanhub.intellij.orogeny.plugin.validation.ProjectValidator;
 import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.CategorisedProjectValidationMessagesRecorder;
@@ -18,7 +13,7 @@ import com.kisanhub.intellij.useful.UsefulProject;
 import com.kisanhub.intellij.useful.commandLine.commandLineApplicationStarterExs.UsingExecutor;
 import org.jetbrains.annotations.NotNull;
 
-import static java.lang.System.err;
+import static java.lang.System.out;
 
 public final class BuilderUsefulProjectUsingExecutor implements UsingExecutor<UsefulProject>
 {
@@ -26,23 +21,8 @@ public final class BuilderUsefulProjectUsingExecutor implements UsingExecutor<Us
 	@Override
 	public void use(@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter") @NotNull final UsefulProject usefulProject)
 	{
-		final boolean initialized = usefulProject.project.isInitialized();
-		System.out.println("initialized = " + initialized);
-		// true
-
-
-		final ProjectManager instance = ProjectManager.getInstance();
-		Project defaultProject = instance.getDefaultProject();
-		final ProjectRootManager instance1 = ProjectRootManager.getInstance(defaultProject);
-		Sdk jdk = instance1.getProjectSdk();
-		System.out.println(jdk);
-
-		final Sdk projectSdk = usefulProject.projectRootManager.getProjectSdk();
-		System.out.println(projectSdk);
-
-
-		assert err != null;
-		final ExitingProjectValidationMessagesRecorder projectValidationMessagesRecorder = new ExitingProjectValidationMessagesRecorder(new CategorisedProjectValidationMessagesRecorder(), err);
+		assert out != null;
+		final ExitingProjectValidationMessagesRecorder projectValidationMessagesRecorder = new ExitingProjectValidationMessagesRecorder(new CategorisedProjectValidationMessagesRecorder(), out);
 
 		final ProjectValidator projectValidator = new ProjectValidator(usefulProject);
 		projectValidator.validateArtifacts(projectValidationMessagesRecorder);
@@ -55,12 +35,14 @@ public final class BuilderUsefulProjectUsingExecutor implements UsingExecutor<Us
 		projectValidator.validateInspections(projectValidationMessagesRecorder);
 		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
 
-		new ProjectOfflineRebuilder(usefulProject).offlineRebuild(projectValidationMessagesRecorder);
+		final ProjectOfflineRebuilder projectOfflineRebuilder = new ProjectOfflineRebuilder(usefulProject);
+
+		projectOfflineRebuilder.offlineRebuild(projectValidationMessagesRecorder);
+		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
+
+		projectOfflineRebuilder.rebuildAllArtifactsNotBuiltOnMake(projectValidationMessagesRecorder);
 		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
 
 		projectValidationMessagesRecorder.writeToPrintStream();
-
-		throw new IllegalStateException("TODO: rebuild artifacts; some are built as part of rebuild, though");
 	}
-
 }
