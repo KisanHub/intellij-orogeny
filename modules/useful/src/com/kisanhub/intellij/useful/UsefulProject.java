@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Set;
 
 import static java.lang.System.getProperty;
@@ -125,10 +125,10 @@ public final class UsefulProject implements ProcessModuleOrder
 	}
 
 	@NotNull
-	public List<ProcessModuleOrder> usefulModulesSortedInDependencyOrder()
+	public Collection<ProcessModuleOrder> usefulModulesSortedInDependencyOrder()
 	{
 		final Module[] sortedModules = moduleManager.getSortedModules();
-		final List<ProcessModuleOrder> usefulModulesSorted = new ArrayList<ProcessModuleOrder>(sortedModules.length);
+		final Collection<ProcessModuleOrder> usefulModulesSorted = new ArrayList<ProcessModuleOrder>(sortedModules.length);
 		for (final Module sortedModule : sortedModules)
 		{
 			usefulModulesSorted.add(new UsefulModule(sortedModule));

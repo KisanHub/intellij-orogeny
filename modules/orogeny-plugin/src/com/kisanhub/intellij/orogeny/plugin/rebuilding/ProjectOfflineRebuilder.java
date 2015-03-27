@@ -7,20 +7,15 @@ package com.kisanhub.intellij.orogeny.plugin.rebuilding;
 
 import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompileScope;
-import com.intellij.openapi.compiler.CompilerManager;
 import com.intellij.openapi.ui.TestDialog;
 import com.intellij.packaging.artifacts.Artifact;
 import com.intellij.packaging.artifacts.ArtifactManager;
-import com.intellij.packaging.impl.compiler.ArtifactCompileScope;
-import com.intellij.packaging.impl.compiler.ArtifactsCompiler;
-import com.intellij.packaging.impl.compiler.ArtifactsWorkspaceSettings;
 import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.ProjectValidationMessagesRecorder;
 import com.kisanhub.intellij.useful.UsefulProject;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 import static com.intellij.openapi.ui.Messages.setTestDialog;
 import static com.intellij.packaging.impl.compiler.ArtifactCompileScope.createArtifactsScope;

@@ -5,19 +5,13 @@
 package com.kisanhub.intellij.useful.commandLine.commandLineApplicationStarterExs;
 
 import com.intellij.openapi.application.ApplicationStarterEx;
-import com.intellij.openapi.application.ex.ApplicationEx;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static com.intellij.idea.IdeaApplication.IDEA_IS_UNIT_TEST;
-import static com.intellij.openapi.application.ex.ApplicationManagerEx.getApplicationEx;
 import static java.lang.Boolean.TRUE;
 import static java.lang.System.*;
-import static java.util.Arrays.asList;
 
 @SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
 public abstract class AbstractCommandLineApplicationStarterEx extends ApplicationStarterEx
@@ -120,32 +114,5 @@ public abstract class AbstractCommandLineApplicationStarterEx extends Applicatio
 		exit(exitCode);
 	}
 
-	private int oldCode(@NotNull final String[] commandLineArgumentsExcludingCommandName)
-	{
-		final int[] wrappedExitCode = new int[1];
-		// Not convinced we need to use runReadAction
-		final ApplicationEx application = application();
-		application.runReadAction(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				wrappedExitCode[0] = execute(commandLineArgumentsExcludingCommandName);
-			}
-		});
-		application.exit();
-		// Causes System.exit(0) - not what we want
-		// application.exit(true, true);
-		return wrappedExitCode[0];
-	}
-
 	protected abstract int execute(@NotNull final String... commandLineArgumentsExcludingCommandName);
-
-	@NotNull
-	private static ApplicationEx application()
-	{
-		final ApplicationEx application = getApplicationEx();
-		assert application != null;
-		return application;
-	}
 }

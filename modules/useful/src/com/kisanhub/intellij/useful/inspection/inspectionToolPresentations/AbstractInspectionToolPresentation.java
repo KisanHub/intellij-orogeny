@@ -232,7 +232,7 @@ public abstract class AbstractInspectionToolPresentation implements InspectionTo
 
 	@Nullable
 	@Override
-	public final QuickFixAction[] extractActiveFixes(@NotNull final RefEntity[] refElements, @NotNull final Map<RefEntity, Set<QuickFix>> actions)
+	public final QuickFixAction[] extractActiveFixes(@NotNull final RefEntity[] refElements, @SuppressWarnings("rawtypes") @NotNull final Map<RefEntity, Set<QuickFix>> actions)
 	{
 		throw new UnsupportedOperationException();
 	}

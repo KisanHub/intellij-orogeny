@@ -9,7 +9,6 @@ import com.intellij.analysis.AnalysisScope;
 import com.intellij.codeInspection.InspectionProfile;
 import com.intellij.codeInspection.ex.GlobalInspectionContextImpl;
 import com.intellij.codeInspection.ex.InspectionToolWrapper;
-import com.intellij.codeInspection.ex.Tools;
 import com.intellij.codeInspection.ui.InspectionToolPresentation;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NotNullLazyValue;

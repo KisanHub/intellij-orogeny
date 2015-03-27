@@ -6,7 +6,6 @@
 package com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders;
 
 import com.intellij.openapi.compiler.CompilerMessageCategory;
-import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
