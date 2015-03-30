@@ -7,7 +7,6 @@ package com.kisanhub.intellij.orogeny.plugin.rebuilding;
 
 import com.intellij.openapi.ui.TestDialog;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.openapi.ui.Messages.NO;
 

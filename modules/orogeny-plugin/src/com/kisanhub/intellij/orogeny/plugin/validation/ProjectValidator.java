@@ -5,14 +5,12 @@
 
 package com.kisanhub.intellij.orogeny.plugin.validation;
 
-import com.intellij.execution.ExecutionTarget;
-import com.intellij.execution.ExecutionTargetManager;
 import com.intellij.execution.Executor;
 import com.intellij.execution.RunnerAndConfigurationSettings;
-import com.intellij.execution.configurations.*;
+import com.intellij.execution.configurations.RuntimeConfigurationError;
+import com.intellij.execution.configurations.RuntimeConfigurationException;
+import com.intellij.execution.configurations.RuntimeConfigurationWarning;
 import com.intellij.execution.executors.DefaultRunExecutor;
-import com.intellij.execution.junit.JUnitConfigurationType;
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.compiler.CompilerMessageCategory;
 import com.intellij.openapi.project.Project;
 import com.intellij.packaging.artifacts.Artifact;

@@ -41,6 +41,8 @@ public final class RunTestsProcessListener extends ProcessAdapter
 	@Override
 	public void onTextAvailable(@NotNull final ProcessEvent event, @SuppressWarnings("rawtypes") final Key outputType)
 	{
+		System.out.println("onTextAvailable = " + event);
+
 		final ProcessHandler processHandler = event.getProcessHandler();
 		assert processHandler != null;
 
@@ -57,6 +59,7 @@ public final class RunTestsProcessListener extends ProcessAdapter
 	@Override
 	public void processTerminated(@NotNull final ProcessEvent event)
 	{
+		System.out.println("processTerminated = " + event);
 		final ProcessHandler processHandler = event.getProcessHandler();
 		assert processHandler != null;
 		processHandler.removeProcessListener(this);

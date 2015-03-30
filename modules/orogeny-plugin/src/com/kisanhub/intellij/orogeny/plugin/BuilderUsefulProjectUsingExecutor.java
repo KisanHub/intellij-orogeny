@@ -5,6 +5,7 @@
 
 package com.kisanhub.intellij.orogeny.plugin;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.kisanhub.intellij.orogeny.plugin.rebuilding.ProjectOfflineRebuilder;
 import com.kisanhub.intellij.orogeny.plugin.testing.TestsRunner;
 import com.kisanhub.intellij.orogeny.plugin.validation.ProjectValidator;
@@ -37,7 +38,7 @@ public final class BuilderUsefulProjectUsingExecutor implements UsingExecutor<Us
 		projectValidator.validateInspections(projectValidationMessagesRecorder);
 		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
 
-		final ProjectOfflineRebuilder projectOfflineRebuilder = new ProjectOfflineRebuilder(usefulProject);
+		final ProjectOfflineRebuilder projectOfflineRebuilder = new ProjectOfflineRebuilder(usefulProject, ApplicationManager.getApplication().isHeadlessEnvironment());
 
 		projectOfflineRebuilder.offlineRebuild(projectValidationMessagesRecorder);
 		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();

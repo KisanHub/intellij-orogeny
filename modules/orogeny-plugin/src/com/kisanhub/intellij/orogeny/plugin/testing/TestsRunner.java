@@ -59,6 +59,15 @@ public final class TestsRunner
 		runnerAndConfigurationSettingsList = usefulProject.runManager.getConfigurationSettingsList(configurationType);
 	}
 
+	public void runTestConfigurations(@NotNull final ProjectValidationMessagesRecorder projectValidationMessagesRecorder)
+	{
+		for (final RunnerAndConfigurationSettings runnerAndConfigurationSettings : runnerAndConfigurationSettingsList)
+		{
+			System.out.println("runnerAndConfigurationSettings = " + runnerAndConfigurationSettings);
+			runTestConfiguration(runnerAndConfigurationSettings, projectValidationMessagesRecorder);
+		}
+	}
+
 	@Nullable
 	private static ProgramRunner<?> getProgrammerRunner(@NotNull final RunnerAndConfigurationSettings runnerAndConfigurationSettings)
 	{
@@ -79,18 +88,10 @@ public final class TestsRunner
 			assert type != null;
 			if (typeId.equals(type.getId()))
 			{
-				allRunnerAndConfigurationSettings.add(runnerAndConfigurationSettings);
+				foundRunnerAndConfigurationSettings.add(runnerAndConfigurationSettings);
 			}
 		}
 		return foundRunnerAndConfigurationSettings;
-	}
-
-	public void runTestConfigurations(@NotNull final ProjectValidationMessagesRecorder projectValidationMessagesRecorder)
-	{
-		for (final RunnerAndConfigurationSettings runnerAndConfigurationSettings : runnerAndConfigurationSettingsList)
-		{
-			runTestConfiguration(runnerAndConfigurationSettings, projectValidationMessagesRecorder);
-		}
 	}
 
 	private void runTestConfiguration(@NotNull final RunnerAndConfigurationSettings runnerAndConfigurationSettings, @NotNull final ProjectValidationMessagesRecorder projectValidationMessagesRecorder)
@@ -100,6 +101,7 @@ public final class TestsRunner
 
 		if (runnerAndConfigurationSettings.isEditBeforeRun())
 		{
+			System.out.println("runnerAndConfigurationSettings = " + "isEdit");
 			return;
 		}
 
@@ -143,6 +145,7 @@ public final class TestsRunner
 
 		if (ExecutorRegistry.getInstance().isStarting(executionEnvironment))
 		{
+			System.out.println("runnerAndConfigurationSettings = " + "isStarting");
 			return;
 		}
 

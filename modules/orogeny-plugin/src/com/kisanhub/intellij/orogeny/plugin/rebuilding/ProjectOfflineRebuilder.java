@@ -7,17 +7,19 @@ package com.kisanhub.intellij.orogeny.plugin.rebuilding;
 
 import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompileScope;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.TestDialog;
 import com.intellij.packaging.artifacts.Artifact;
 import com.intellij.packaging.artifacts.ArtifactManager;
 import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.ProjectValidationMessagesRecorder;
 import com.kisanhub.intellij.useful.UsefulProject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
-import static com.intellij.openapi.ui.Messages.setTestDialog;
 import static com.intellij.packaging.impl.compiler.ArtifactCompileScope.createArtifactsScope;
 import static com.kisanhub.intellij.orogeny.plugin.rebuilding.NoTestDialog.AnswerAlwaysAsNo;
 
@@ -26,21 +28,27 @@ public final class ProjectOfflineRebuilder
 	@NotNull
 	private final UsefulProject usefulProject;
 
-	public ProjectOfflineRebuilder(@NotNull final UsefulProject usefulProject)
+	private final boolean isHeadlessEnvironment;
+
+	public ProjectOfflineRebuilder(@NotNull final UsefulProject usefulProject, final boolean isHeadlessEnvironment)
 	{
 		this.usefulProject = usefulProject;
+		this.isHeadlessEnvironment = isHeadlessEnvironment;
 	}
 
 	public void offlineRebuild(@NotNull final ProjectValidationMessagesRecorder projectValidationMessagesRecorder)
 	{
-		final TestDialog oldValue = setTestDialog(AnswerAlwaysAsNo);
+		@Nullable final TestDialog oldValue = isHeadlessEnvironment ? setTestDialogBypassingLoggingBug(AnswerAlwaysAsNo) : null;
 		usefulProject.compilerManager.rebuild(new RebuildCompileStatusNotification(projectValidationMessagesRecorder)
 		{
 			@Override
 			public void finished(final boolean aborted, final int errors, final int warnings, @NotNull final CompileContext compileContext)
 			{
 				super.finished(aborted, errors, warnings, compileContext);
-				setTestDialog(oldValue);
+				if (isHeadlessEnvironment)
+				{
+					setTestDialogBypassingLoggingBug(oldValue);
+				}
 			}
 		});
 	}
@@ -69,5 +77,43 @@ public final class ProjectOfflineRebuilder
 
 		//ArtifactsWorkspaceSettings.getInstance(usefulProject.project).setArtifactsToBuild(artifacts);
 		usefulProject.compilerManager.make(scope, new RebuildCompileStatusNotification(projectValidationMessagesRecorder));
+	}
+
+	@Nullable
+	private static TestDialog setTestDialogBypassingLoggingBug(@Nullable final TestDialog testDialog)
+	{
+		// We're supposed to uses Messages.setTestDialog(), but it's set to check the application is being unit tested, even though the internal logic checks isHeadlessEnvironment() before using the field.
+
+		final Field ourTestImplementation;
+		try
+		{
+			ourTestImplementation = Messages.class.getDeclaredField("ourTestImplementation");
+		}
+		catch (final NoSuchFieldException e)
+		{
+			throw new IllegalStateException("Could not setTestDialog()", e);
+		}
+		assert ourTestImplementation != null;
+		ourTestImplementation.setAccessible(true);
+
+		final TestDialog oldValue;
+		try
+		{
+			oldValue = (TestDialog) ourTestImplementation.get(null);
+		}
+		catch (final IllegalAccessException e)
+		{
+			throw new IllegalStateException("Should never happen as we made the field accessible before get", e);
+		}
+
+		try
+		{
+			ourTestImplementation.set(null, testDialog);
+		}
+		catch (final IllegalAccessException e)
+		{
+			throw new IllegalStateException("Should never happen as we made the field accessible before set", e);
+		}
+		return oldValue;
 	}
 }
