@@ -6,6 +6,7 @@
 package com.kisanhub.intellij.orogeny.plugin;
 
 import com.kisanhub.intellij.orogeny.plugin.rebuilding.ProjectOfflineRebuilder;
+import com.kisanhub.intellij.orogeny.plugin.testing.TestsRunner;
 import com.kisanhub.intellij.orogeny.plugin.validation.ProjectValidator;
 import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.CategorisedProjectValidationMessagesRecorder;
 import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.ExitingProjectValidationMessagesRecorder;
@@ -26,6 +27,7 @@ public final class BuilderUsefulProjectUsingExecutor implements UsingExecutor<Us
 
 		final ProjectValidator projectValidator = new ProjectValidator(usefulProject);
 		projectValidator.validateArtifacts(projectValidationMessagesRecorder);
+		projectValidator.validateRunConfigurations(projectValidationMessagesRecorder);
 		projectValidator.validateModuleOrderEntriesInModuleDependencyOrder(projectValidationMessagesRecorder);
 		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
 
@@ -41,6 +43,10 @@ public final class BuilderUsefulProjectUsingExecutor implements UsingExecutor<Us
 		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
 
 		projectOfflineRebuilder.rebuildAllArtifactsNotBuiltOnMake(projectValidationMessagesRecorder);
+		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
+
+		final TestsRunner jUnitTestsRunner = new TestsRunner(usefulProject, "JUnit");
+		jUnitTestsRunner.runTestConfigurations(projectValidationMessagesRecorder);
 		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
 
 		projectValidationMessagesRecorder.writeToPrintStream();

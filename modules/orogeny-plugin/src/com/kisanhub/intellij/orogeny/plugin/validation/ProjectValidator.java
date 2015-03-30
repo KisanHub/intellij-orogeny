@@ -5,6 +5,15 @@
 
 package com.kisanhub.intellij.orogeny.plugin.validation;
 
+import com.intellij.execution.ExecutionTarget;
+import com.intellij.execution.ExecutionTargetManager;
+import com.intellij.execution.Executor;
+import com.intellij.execution.RunnerAndConfigurationSettings;
+import com.intellij.execution.configurations.*;
+import com.intellij.execution.executors.DefaultRunExecutor;
+import com.intellij.execution.junit.JUnitConfigurationType;
+import com.intellij.icons.AllIcons;
+import com.intellij.openapi.compiler.CompilerMessageCategory;
 import com.intellij.openapi.project.Project;
 import com.intellij.packaging.artifacts.Artifact;
 import com.intellij.packaging.artifacts.ArtifactManager;
@@ -13,6 +22,7 @@ import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessages
 import com.kisanhub.intellij.useful.UsefulProject;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -36,6 +46,8 @@ public final class ProjectValidator
 	@NonNls
 	@NotNull
 	private static final String InvalidId = "invalid";
+
+	private static final String RunConfigurationSubCategory = "RunConfiguration";
 
 	@NotNull
 	private final UsefulProject usefulProject;
@@ -72,6 +84,57 @@ public final class ProjectValidator
 			}
 		}
 		return allArtifactsValid;
+	}
+
+	public boolean validateRunConfigurations(@NotNull final ProjectValidationMessagesRecorder projectValidationMessagesRecorder)
+	{
+		final Executor runExecutorInstance = DefaultRunExecutor.getRunExecutorInstance();
+
+		boolean runConfigurationsValid = true;
+		for (final RunnerAndConfigurationSettings runnerAndConfigurationSettings : usefulProject.runManager.getAllSettings())
+		{
+			if (runnerAndConfigurationSettings.isEditBeforeRun())
+			{
+				continue;
+			}
+
+			try
+			{
+				runnerAndConfigurationSettings.checkSettings(runExecutorInstance);
+			}
+			catch (final RuntimeConfigurationWarning e)
+			{
+				runConfigurationsValid = recordInvalidRunConfiguration(projectValidationMessagesRecorder, e, runnerAndConfigurationSettings, WARNING);
+			}
+			catch (final RuntimeConfigurationError e)
+			{
+				runConfigurationsValid = recordInvalidRunConfiguration(projectValidationMessagesRecorder, e, runnerAndConfigurationSettings, ERROR);
+			}
+			catch (final RuntimeConfigurationException e)
+			{
+				runConfigurationsValid = recordInvalidRunConfiguration(projectValidationMessagesRecorder, e, runnerAndConfigurationSettings, ERROR);
+			}
+		}
+		return runConfigurationsValid;
+	}
+
+	@SuppressWarnings("BooleanMethodNameMustStartWithQuestion")
+	private static boolean recordInvalidRunConfiguration(@NotNull final ProjectValidationMessagesRecorder projectValidationMessagesRecorder, @NotNull final RuntimeConfigurationException e, @NotNull final RunnerAndConfigurationSettings runnerAndConfigurationSettings, @Nullable final CompilerMessageCategory compilerMessageCategory)
+	{
+		assert compilerMessageCategory != null;
+
+		@Nullable final String message = e.getMessage();
+
+		projectValidationMessagesRecorder.record(compilerMessageCategory, RunConfigurationSubCategory, getRunnerAndConfigurationSettingsName(runnerAndConfigurationSettings) + ':' + (message == null ? "(null)" : message));
+		return false;
+	}
+
+	@NotNull
+	@NonNls
+	public static String getRunnerAndConfigurationSettingsName(@NotNull final RunnerAndConfigurationSettings runnerAndConfigurationSettings)
+	{
+		@Nullable final String name = runnerAndConfigurationSettings.getName();
+		return name == null ? "<Unknown>" : name;
 	}
 
 	public void validateModuleOrderEntriesInModuleDependencyOrder(@NotNull final ProjectValidationMessagesRecorder projectValidationMessagesRecorder)

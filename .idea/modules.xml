@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/modules/orogeny-external/orogeny-external.iml" filepath="$PROJECT_DIR$/modules/orogeny-external/orogeny-external.iml" />
-      <module fileurl="file://$PROJECT_DIR$/modules/orogeny-plugin/orogeny-plugin.iml" filepath="$PROJECT_DIR$/modules/orogeny-plugin/orogeny-plugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/modules/useful/useful.iml" filepath="$PROJECT_DIR$/modules/useful/useful.iml" />
-      <module fileurl="file://$PROJECT_DIR$/useful-commandLine-external/useful-commandLine-external.iml" filepath="$PROJECT_DIR$/useful-commandLine-external/useful-commandLine-external.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/orogeny-external/orogeny-external.iml" filepath="$PROJECT_DIR$/modules/orogeny-external/orogeny-external.iml" group="orogeny" />
+      <module fileurl="file://$PROJECT_DIR$/modules/orogeny-plugin/orogeny-plugin.iml" filepath="$PROJECT_DIR$/modules/orogeny-plugin/orogeny-plugin.iml" group="orogeny" />
+      <module fileurl="file://$PROJECT_DIR$/modules/useful/useful.iml" filepath="$PROJECT_DIR$/modules/useful/useful.iml" group="useful" />
+      <module fileurl="file://$PROJECT_DIR$/modules/useful-commandLine-external/useful-commandLine-external.iml" filepath="$PROJECT_DIR$/modules/useful-commandLine-external/useful-commandLine-external.iml" group="useful" />
     </modules>
   </component>
 </project>

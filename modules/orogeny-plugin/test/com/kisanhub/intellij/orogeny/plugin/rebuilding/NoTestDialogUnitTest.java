@@ -5,24 +5,18 @@
 
 package com.kisanhub.intellij.orogeny.plugin.rebuilding;
 
-import com.intellij.openapi.ui.TestDialog;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.junit.Test;
 
 import static com.intellij.openapi.ui.Messages.NO;
+import static com.kisanhub.intellij.orogeny.plugin.rebuilding.NoTestDialog.AnswerAlwaysAsNo;
+import static org.junit.Assert.assertEquals;
 
-public final class NoTestDialog implements TestDialog
+public final class NoTestDialogUnitTest
 {
-	@NotNull
-	public static final TestDialog AnswerAlwaysAsNo = new NoTestDialog();
-
-	private NoTestDialog()
+	@Test
+	public void naiveTest()
 	{
-	}
-
-	@Override
-	public int show(@NotNull final String message)
-	{
-		return NO;
+		final int show = AnswerAlwaysAsNo.show("hello world");
+		assertEquals((long) NO, (long) show);
 	}
 }

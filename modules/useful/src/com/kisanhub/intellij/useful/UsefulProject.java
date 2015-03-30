@@ -11,6 +11,8 @@ import com.intellij.codeInspection.InspectionProfile;
 import com.intellij.codeInspection.ex.GlobalInspectionContextImpl;
 import com.intellij.codeInspection.ex.InspectionManagerEx;
 import com.intellij.compiler.CompilerConfiguration;
+import com.intellij.execution.ExecutionTargetManager;
+import com.intellij.execution.RunManagerEx;
 import com.intellij.openapi.compiler.CompilerManager;
 import com.intellij.openapi.components.PathMacroManager;
 import com.intellij.openapi.module.Module;
@@ -78,6 +80,14 @@ public final class UsefulProject implements ProcessModuleOrder
 
 	@SuppressWarnings("PublicField")
 	@NotNull
+	public final RunManagerEx runManager;
+
+	@SuppressWarnings("PublicField")
+	@NotNull
+	public final ExecutionTargetManager executionTargetManager;
+
+	@SuppressWarnings("PublicField")
+	@NotNull
 	public final InspectionManagerEx inspectionManagerEx;
 
 	@SuppressWarnings("PublicField")
@@ -104,6 +114,8 @@ public final class UsefulProject implements ProcessModuleOrder
 		pathMacroManager = pathMacroManager();
 		compilerManager = compilerManager();
 		compilerConfiguration = compilerConfiguration();
+		runManager = runManager();
+		executionTargetManager = executionTargetManager();
 		inspectionManagerEx = inspectionManagerEx();
 		inspectionProjectProfileManager = inspectionProjectProfileManager();
 
@@ -209,6 +221,20 @@ public final class UsefulProject implements ProcessModuleOrder
 		@SuppressWarnings("LocalVariableHidesMemberVariable") final CompilerConfiguration compilerConfiguration = CompilerConfiguration.getInstance(project);
 		assert compilerConfiguration != null;
 		return compilerConfiguration;
+	}
+
+	@NotNull
+	private RunManagerEx runManager()
+	{
+		@SuppressWarnings("LocalVariableHidesMemberVariable") final RunManagerEx runManager = RunManagerEx.getInstanceEx(project);
+		assert runManager != null;
+		return runManager;
+	}
+
+	@NotNull
+	private ExecutionTargetManager executionTargetManager()
+	{
+		return ExecutionTargetManager.getInstance(project);
 	}
 
 	@NotNull
