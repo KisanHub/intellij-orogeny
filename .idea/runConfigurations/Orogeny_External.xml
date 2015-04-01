@@ -2,8 +2,8 @@
   <configuration default="false" name="Orogeny External" type="Application" factoryName="Application">
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <option name="MAIN_CLASS_NAME" value="com.kisanhub.intellij.orogeny.external.EntryPoint" />
-    <option name="VM_PARAMETERS" value="" />
-    <option name="PROGRAM_PARAMETERS" value="--project $PROJECT_DIR$" />
+    <option name="VM_PARAMETERS" value="-XX:MaxPermSize=128m -Xms2048m -Xmx2048m -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -ea -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -Xverify:none" />
+    <option name="PROGRAM_PARAMETERS" value="--project $PROJECT_DIR$ --config-folder IdeaIC14.Raph" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="ALTERNATIVE_JRE_PATH" value="1.6" />

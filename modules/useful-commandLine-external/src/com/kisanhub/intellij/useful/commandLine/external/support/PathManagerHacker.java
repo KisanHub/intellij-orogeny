@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
+import static java.lang.System.clearProperty;
 import static java.lang.System.setProperty;
 
 public final class PathManagerHacker
@@ -33,6 +34,10 @@ public final class PathManagerHacker
 	@NonNls
 	private static final String PROPERTY_PATHS_SELECTOR = "idea.paths.selector";
 
+	@NotNull
+	@NonNls
+	private static final String JavaEndorsedDirs = "java.endorsed.dirs";
+
 	// com.intellij.openapi.application.PathManager.LIB_FOLDER
 	@NotNull
 	@NonNls
@@ -55,6 +60,7 @@ public final class PathManagerHacker
 	{
 		forceIntelliJHome();
 		forceIntelliJConfigPath();
+		allowIntelliJToSetJavaEndorsedDirs();
 	}
 
 	@SuppressWarnings("AccessOfSystemProperties")
@@ -67,6 +73,11 @@ public final class PathManagerHacker
 	private void forceIntelliJConfigPath()
 	{
 		setProperty(PROPERTY_PATHS_SELECTOR, configFolderName);
+	}
+
+	private static void allowIntelliJToSetJavaEndorsedDirs()
+	{
+		clearProperty(JavaEndorsedDirs);
 	}
 
 	@NotNull

@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import static com.kisanhub.intellij.useful.commandLine.external.support.Argument.*;
 import static java.lang.Boolean.TRUE;
 import static java.lang.System.arraycopy;
+import static java.lang.System.clearProperty;
 import static java.lang.System.setProperty;
 import static java.lang.Thread.currentThread;
 

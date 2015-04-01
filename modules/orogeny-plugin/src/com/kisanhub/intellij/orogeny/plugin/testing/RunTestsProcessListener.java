@@ -9,9 +9,9 @@ import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessHandler;
+import com.intellij.execution.process.ProcessListener;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.util.Key;
-import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.ProjectValidationMessagesRecorder;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +19,7 @@ import static com.intellij.execution.ui.ConsoleViewContentType.ERROR_OUTPUT;
 import static com.intellij.openapi.compiler.CompilerMessageCategory.ERROR;
 import static com.intellij.openapi.compiler.CompilerMessageCategory.INFORMATION;
 
-public final class RunTestsProcessListener extends ProcessAdapter
+public final class RunTestsProcessListener implements ProcessListener
 {
 	@NotNull
 	@NonNls
@@ -29,12 +29,12 @@ public final class RunTestsProcessListener extends ProcessAdapter
 	private final RunnerAndConfigurationSettings runnerAndConfigurationSettings;
 
 	@NotNull
-	private final ProjectValidationMessagesRecorder projectValidationMessagesRecorder;
+	private final RunnerAndConfigurationSettingsFailureRecorder runnerAndConfigurationSettingsFailureRecorder;
 
-	public RunTestsProcessListener(@NotNull final RunnerAndConfigurationSettings runnerAndConfigurationSettings, @NotNull final ProjectValidationMessagesRecorder projectValidationMessagesRecorder)
+	public RunTestsProcessListener(@NotNull final RunnerAndConfigurationSettings runnerAndConfigurationSettings, @NotNull final RunnerAndConfigurationSettingsFailureRecorder runnerAndConfigurationSettingsFailureRecorder)
 	{
 		this.runnerAndConfigurationSettings = runnerAndConfigurationSettings;
-		this.projectValidationMessagesRecorder = projectValidationMessagesRecorder;
+		this.runnerAndConfigurationSettingsFailureRecorder = runnerAndConfigurationSettingsFailureRecorder;
 	}
 
 	@SuppressWarnings("RefusedBequest")
@@ -43,16 +43,25 @@ public final class RunTestsProcessListener extends ProcessAdapter
 	{
 		System.out.println("onTextAvailable = " + event);
 
-		final ProcessHandler processHandler = event.getProcessHandler();
-		assert processHandler != null;
-
 		final ConsoleViewContentType consoleViewType = ConsoleViewContentType.getConsoleViewType(outputType);
 		assert consoleViewType != null;
 		final String text = event.getText();
 
 		assert ERROR != null;
 		assert INFORMATION != null;
-		TestsRunner.recordFailure(runnerAndConfigurationSettings, projectValidationMessagesRecorder, consoleViewType.equals(ERROR_OUTPUT) ? ERROR : INFORMATION, RunTestSubCategory, text);
+		runnerAndConfigurationSettingsFailureRecorder.recordFailure(runnerAndConfigurationSettings, consoleViewType.equals(ERROR_OUTPUT) ? ERROR : INFORMATION, RunTestSubCategory, text);
+	}
+
+	@Override
+	public void startNotified(final ProcessEvent event)
+	{
+		System.out.println("startNotified = " + event);
+	}
+
+	@Override
+	public void processWillTerminate(final ProcessEvent event, final boolean willBeDestroyed)
+	{
+		System.out.println("processWillTerminate = " + event);
 	}
 
 	@SuppressWarnings("RefusedBequest")
@@ -68,7 +77,7 @@ public final class RunTestsProcessListener extends ProcessAdapter
 		if (exitCode != 0)
 		{
 			assert ERROR != null;
-			TestsRunner.recordFailure(runnerAndConfigurationSettings, projectValidationMessagesRecorder, ERROR, RunTestSubCategory, "Tests failed (exit code was " + exitCode + ')');
+			runnerAndConfigurationSettingsFailureRecorder.recordFailure(runnerAndConfigurationSettings, ERROR, RunTestSubCategory, "Tests failed (exit code was " + exitCode + ')');
 		}
 	}
 }

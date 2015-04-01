@@ -5,16 +5,23 @@
 
 package com.kisanhub.intellij.orogeny.plugin;
 
+import com.intellij.execution.Executor;
+import com.intellij.execution.RunManagerEx;
+import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.openapi.application.ApplicationManager;
 import com.kisanhub.intellij.orogeny.plugin.rebuilding.ProjectOfflineRebuilder;
-import com.kisanhub.intellij.orogeny.plugin.testing.TestsRunner;
+import com.kisanhub.intellij.orogeny.plugin.testing.RunnerAndConfigurationSettingsFailureRecorder;
+import com.kisanhub.intellij.orogeny.plugin.testing.runnerAndConfigurationSettingsUsers.*;
 import com.kisanhub.intellij.orogeny.plugin.validation.ProjectValidator;
 import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.CategorisedProjectValidationMessagesRecorder;
 import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.ExitingProjectValidationMessagesRecorder;
 import com.kisanhub.intellij.useful.UsefulProject;
-import com.kisanhub.intellij.useful.commandLine.commandLineApplicationStarterExs.UsingExecutor;
+import com.kisanhub.intellij.useful.commandLine.UsingExecutor;
 import org.jetbrains.annotations.NotNull;
 
+import static com.kisanhub.intellij.orogeny.plugin.testing.runnerAndConfigurationSettingsUsers.CheckSettingsRunnerAndConfigurationSettingsUser.RunExecutor;
+import static com.kisanhub.intellij.orogeny.plugin.testing.runnerAndConfigurationSettingsUsers.HasTypeIdPassConfigurationRunnerAndConfigurationSettingsUser.JUnitTypeId;
+import static java.lang.Class.forName;
 import static java.lang.System.out;
 
 public final class BuilderUsefulProjectUsingExecutor implements UsingExecutor<UsefulProject>
@@ -28,7 +35,6 @@ public final class BuilderUsefulProjectUsingExecutor implements UsingExecutor<Us
 
 		final ProjectValidator projectValidator = new ProjectValidator(usefulProject);
 		projectValidator.validateArtifacts(projectValidationMessagesRecorder);
-		projectValidator.validateRunConfigurations(projectValidationMessagesRecorder);
 		projectValidator.validateModuleOrderEntriesInModuleDependencyOrder(projectValidationMessagesRecorder);
 		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
 
@@ -46,10 +52,51 @@ public final class BuilderUsefulProjectUsingExecutor implements UsingExecutor<Us
 		projectOfflineRebuilder.rebuildAllArtifactsNotBuiltOnMake(projectValidationMessagesRecorder);
 		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
 
-		final TestsRunner jUnitTestsRunner = new TestsRunner(usefulProject, "JUnit");
-		jUnitTestsRunner.runTestConfigurations(projectValidationMessagesRecorder);
-		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
+		validateTests(usefulProject, projectValidationMessagesRecorder);
 
 		projectValidationMessagesRecorder.writeToPrintStream();
 	}
+
+	private static void validateTests(@NotNull final UsefulProject usefulProject, @NotNull final ExitingProjectValidationMessagesRecorder projectValidationMessagesRecorder)
+	{
+		final RunManagerEx runManager = usefulProject.runManager;
+		final RunnerAndConfigurationSettingsUser<RunnerAndConfigurationSettingsFailureRecorder> runnerAndConfigurationSettingsUser = runnerAndConfigurationSettings(runManager);
+		final RunnerAndConfigurationSettingsFailureRecorder data = new RunnerAndConfigurationSettingsFailureRecorder(projectValidationMessagesRecorder);
+
+		for (final RunnerAndConfigurationSettings runnerAndConfigurationSettings : runManager.getAllSettings())
+		{
+			runnerAndConfigurationSettingsUser.use(runnerAndConfigurationSettings, data);
+		}
+
+		projectValidationMessagesRecorder.writeToPrintStreamAndExitIfHasErrors();
+	}
+
+	@NotNull
+	private static RunnerAndConfigurationSettingsUser<RunnerAndConfigurationSettingsFailureRecorder> runnerAndConfigurationSettings(@NotNull final RunManagerEx runManager)
+	{
+		final Executor executor = RunExecutor;
+		return new SharedOnlyRunnerAndConfigurationSettingsUser<RunnerAndConfigurationSettingsFailureRecorder>
+		(
+			runManager,
+			new NotTemplateRunnerAndConfigurationSettingsUser<RunnerAndConfigurationSettingsFailureRecorder>
+			(
+				new NotTemporaryRunnerAndConfigurationSettingsUser<RunnerAndConfigurationSettingsFailureRecorder>
+				(
+					new NotEditBeforeRunRunnerAndConfigurationSettingsUser<RunnerAndConfigurationSettingsFailureRecorder>
+					(
+						new HasTypeIdPassConfigurationRunnerAndConfigurationSettingsUser<RunnerAndConfigurationSettingsFailureRecorder>
+						(
+							JUnitTypeId,
+							new CheckSettingsRunnerAndConfigurationSettingsUser
+							(
+								executor,
+								new TestRunningRunnerAndConfigurationSettingsUser(executor)
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+
 }

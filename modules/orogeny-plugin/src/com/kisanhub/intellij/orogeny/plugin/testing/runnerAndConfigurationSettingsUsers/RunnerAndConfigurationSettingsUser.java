@@ -3,11 +3,12 @@
  * Copyright © 2015 The developers of intellij-orogeny. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/KisanHub/developjs/master/COPYRIGHT.
  */
 
-package com.kisanhub.intellij.useful.commandLine.commandLineApplicationStarterExs;
+package com.kisanhub.intellij.orogeny.plugin.testing.runnerAndConfigurationSettingsUsers;
 
+import com.intellij.execution.RunnerAndConfigurationSettings;
 import org.jetbrains.annotations.NotNull;
 
-public interface UsingExecutor<V>
+public interface RunnerAndConfigurationSettingsUser<D>
 {
-	void use(@NotNull final V using);
+	void use(@NotNull final RunnerAndConfigurationSettings runnerAndConfigurationSettings, @NotNull final D data);
 }

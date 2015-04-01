@@ -7,6 +7,7 @@ package com.kisanhub.intellij.useful.commandLine.commandLineApplicationStarterEx
 
 import com.intellij.openapi.project.ex.ProjectEx;
 import com.kisanhub.intellij.useful.UsefulProject;
+import com.kisanhub.intellij.useful.commandLine.UsingExecutor;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")

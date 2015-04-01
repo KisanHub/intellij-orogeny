@@ -8,6 +8,7 @@ package com.kisanhub.intellij.useful.commandLine.commandLineApplicationStarterEx
 import com.intellij.openapi.project.ex.ProjectEx;
 import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.util.InvalidDataException;
+import com.kisanhub.intellij.useful.commandLine.UsingExecutor;
 import org.jdom.JDOMException;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,11 +71,23 @@ public abstract class AbstractProjectUsingCommandLineApplicationStarterEx extend
 		{
 			projectUsingExecutor.use(project);
 		}
+		catch (final Throwable t)
+		{
+			return printErrorToStandardError(t);
+		}
 		finally
 		{
 			projectManagerEx.closeProject(project);
 		}
 		return SuccessExitCode;
+	}
+
+	@SuppressWarnings("UseOfSystemOutOrSystemErr")
+	private static int printErrorToStandardError(@NotNull final Throwable t)
+	{
+		assert err != null;
+		t.printStackTrace(err);
+		return UnexpectedErrorExitCode;
 	}
 
 	@SuppressWarnings("UseOfSystemOutOrSystemErr")
