@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" build-on-make="true" name="orogeny-external:jar">
-    <output-path>$PROJECT_DIR$/output/intellij/artifacts/orogeny-external</output-path>
+    <output-path>$PROJECT_DIR$/.idea/out</output-path>
     <root id="archive" name="orogeny-external.jar">
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/modules/orogeny-external/META-INF/MANIFEST.MF" />

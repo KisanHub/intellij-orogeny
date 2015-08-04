@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="intellij_useful_jar_intellij-useful">
+    <output-path>$PROJECT_DIR$/.idea/out/artifacts</output-path>
+    <root id="archive" name="intellij-useful.jar">
+      <element id="module-output" name="useful" />
+      <element id="module-output" name="useful-commandLine-external" />
+      <element id="dir-copy" path="$PROJECT_DIR$/library/intellij-useful/source/useful-commandLine-external" />
+      <element id="dir-copy" path="$PROJECT_DIR$/library/intellij-useful/source/useful" />
+    </root>
+  </artifact>
+</component>

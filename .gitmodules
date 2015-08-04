@@ -1,0 +1,6 @@
+[submodule "library/intellij-useful"]
+	path = library/intellij-useful
+	url = https://github.com/KisanHub/intellij-useful.git
+[submodule "tools/intellij-multiproject"]
+	path = tools/intellij-multiproject
+	url = https://github.com/raphaelcohn/intellij-multiproject.git

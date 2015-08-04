@@ -4,8 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/modules/orogeny-external/orogeny-external.iml" filepath="$PROJECT_DIR$/modules/orogeny-external/orogeny-external.iml" group="orogeny" />
       <module fileurl="file://$PROJECT_DIR$/modules/orogeny-plugin/orogeny-plugin.iml" filepath="$PROJECT_DIR$/modules/orogeny-plugin/orogeny-plugin.iml" group="orogeny" />
-      <module fileurl="file://$PROJECT_DIR$/modules/useful/useful.iml" filepath="$PROJECT_DIR$/modules/useful/useful.iml" group="useful" />
-      <module fileurl="file://$PROJECT_DIR$/modules/useful-commandLine-external/useful-commandLine-external.iml" filepath="$PROJECT_DIR$/modules/useful-commandLine-external/useful-commandLine-external.iml" group="useful" />
+      <module fileurl="file://$PROJECT_DIR$/library/intellij-useful/source/useful/useful.iml" filepath="$PROJECT_DIR$/library/intellij-useful/source/useful/useful.iml" group="library/intellij-useful" />
+      <module fileurl="file://$PROJECT_DIR$/library/intellij-useful/source/useful-commandLine-external/useful-commandLine-external.iml" filepath="$PROJECT_DIR$/library/intellij-useful/source/useful-commandLine-external/useful-commandLine-external.iml" group="library/intellij-useful" />
     </modules>
   </component>
 </project>
