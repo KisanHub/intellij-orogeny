@@ -11,7 +11,7 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.TestDialog;
 import com.intellij.packaging.artifacts.Artifact;
 import com.intellij.packaging.artifacts.ArtifactManager;
-import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.ProjectValidationMessagesRecorder;
+import com.kisanhub.intellij.useful.projectValidationMessagesRecorders.ProjectValidationMessagesRecorder;
 import com.kisanhub.intellij.useful.UsefulProject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

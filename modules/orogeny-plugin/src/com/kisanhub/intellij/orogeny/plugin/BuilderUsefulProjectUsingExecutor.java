@@ -13,15 +13,14 @@ import com.kisanhub.intellij.orogeny.plugin.rebuilding.ProjectOfflineRebuilder;
 import com.kisanhub.intellij.orogeny.plugin.testing.RunnerAndConfigurationSettingsFailureRecorder;
 import com.kisanhub.intellij.orogeny.plugin.testing.runnerAndConfigurationSettingsUsers.*;
 import com.kisanhub.intellij.orogeny.plugin.validation.ProjectValidator;
-import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.CategorisedProjectValidationMessagesRecorder;
-import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.ExitingProjectValidationMessagesRecorder;
+import com.kisanhub.intellij.useful.projectValidationMessagesRecorders.CategorisedProjectValidationMessagesRecorder;
+import com.kisanhub.intellij.useful.projectValidationMessagesRecorders.ExitingProjectValidationMessagesRecorder;
 import com.kisanhub.intellij.useful.UsefulProject;
 import com.kisanhub.intellij.useful.commandLine.UsingExecutor;
 import org.jetbrains.annotations.NotNull;
 
 import static com.kisanhub.intellij.orogeny.plugin.testing.runnerAndConfigurationSettingsUsers.CheckSettingsRunnerAndConfigurationSettingsUser.RunExecutor;
 import static com.kisanhub.intellij.orogeny.plugin.testing.runnerAndConfigurationSettingsUsers.HasTypeIdPassConfigurationRunnerAndConfigurationSettingsUser.JUnitTypeId;
-import static java.lang.Class.forName;
 import static java.lang.System.out;
 
 public final class BuilderUsefulProjectUsingExecutor implements UsingExecutor<UsefulProject>

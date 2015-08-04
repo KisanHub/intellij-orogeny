@@ -7,7 +7,7 @@ package com.kisanhub.intellij.orogeny.plugin.testing;
 
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.openapi.compiler.CompilerMessageCategory;
-import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.ProjectValidationMessagesRecorder;
+import com.kisanhub.intellij.useful.projectValidationMessagesRecorders.ProjectValidationMessagesRecorder;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

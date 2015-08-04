@@ -13,8 +13,9 @@ import com.intellij.packaging.artifacts.Artifact;
 import com.intellij.packaging.artifacts.ArtifactManager;
 import com.intellij.packaging.artifacts.ArtifactType;
 import com.kisanhub.intellij.orogeny.plugin.testing.RunnerAndConfigurationSettingsFailureRecorder;
-import com.kisanhub.intellij.orogeny.plugin.validation.projectValidationMessagesRecorders.ProjectValidationMessagesRecorder;
+import com.kisanhub.intellij.useful.projectValidationMessagesRecorders.ProjectValidationMessagesRecorder;
 import com.kisanhub.intellij.useful.UsefulProject;
+import com.kisanhub.intellij.useful.rootPolicies.OrderEntryValidatingRootPolicy;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,12 +25,13 @@ import java.util.List;
 import static com.intellij.codeInspection.ex.GlobalInspectionContextUtil.canRunInspections;
 import static com.intellij.openapi.compiler.CompilerMessageCategory.ERROR;
 import static com.intellij.openapi.compiler.CompilerMessageCategory.WARNING;
-import static com.kisanhub.intellij.orogeny.plugin.validation.OrderEntryValidatingRootPolicy.OrderEntryValidatingRootPolicyInstance;
+import static com.kisanhub.intellij.useful.rootPolicies.OrderEntryValidatingRootPolicy.OrderEntryValidatingRootPolicyInstance;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 
 public final class ProjectValidator
 {
+
 	@NonNls
 	@NotNull
 	private static final String ArtifactSubCategory = "Artifact";
