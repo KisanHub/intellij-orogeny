@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" build-on-make="true" name="orogeny-external:jar">
-    <output-path>$PROJECT_DIR$/.idea/out</output-path>
+    <output-path>$PROJECT_DIR$/.idea/out/artifacts</output-path>
     <root id="archive" name="orogeny-external.jar">
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/modules/orogeny-external/META-INF/MANIFEST.MF" />
@@ -8,10 +8,10 @@
       <element id="module-output" name="orogeny-external" />
       <element id="module-output" name="orogeny-plugin" />
       <element id="module-output" name="useful" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/library/jopt-simple/current/jopt-simple-4.5.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/library/jopt-simple/current/jopt-simple-4.5-javadoc.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/library/jopt-simple/current/jopt-simple-4.5-sources.jar" path-in-jar="/" />
       <element id="module-output" name="useful-commandLine-external" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/library/intellij-useful/library/jopt-simple/current/jopt-simple-4.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/library/intellij-useful/library/jopt-simple/current/jopt-simple-4.5-sources.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/library/intellij-useful/library/jopt-simple/current/jopt-simple-4.5-javadoc.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

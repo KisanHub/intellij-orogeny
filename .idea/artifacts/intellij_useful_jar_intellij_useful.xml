@@ -6,6 +6,8 @@
       <element id="module-output" name="useful-commandLine-external" />
       <element id="dir-copy" path="$PROJECT_DIR$/library/intellij-useful/source/useful-commandLine-external" />
       <element id="dir-copy" path="$PROJECT_DIR$/library/intellij-useful/source/useful" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/library/intellij-useful/library/jopt-simple/4.5/jopt-simple-4.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/library/intellij-useful/library/jopt-simple/4.5/jopt-simple-4.5-sources.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

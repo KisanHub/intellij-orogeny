@@ -9,4 +9,4 @@ set -u
 # -Xbootclasspath/a:../lib/boot.jar
 export JAVA_HOME='/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home'
 project="$(pwd)"
-"$JAVA_HOME"/bin/java -XX:MaxPermSize=128m -Xms2048m -Xmx2048m -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -ea -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -Xverify:none -jar output/intellij/artifacts/orogeny-external/orogeny-external.jar --project "$project"
+"$JAVA_HOME"/bin/java -XX:MaxPermSize=128m -Xms2048m -Xmx2048m -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -ea -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -Xverify:none -jar .idea/out/artifacts/orogeny-external.jar --project "$project"
