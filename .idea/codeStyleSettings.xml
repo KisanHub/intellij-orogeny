@@ -26,9 +26,6 @@
         <XML>
           <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
         </XML>
-        <editorconfig>
-          <option name="ENABLED" value="false" />
-        </editorconfig>
         <codeStyleSettings language="HTML">
           <indentOptions>
             <option name="USE_TAB_CHARACTER" value="true" />
